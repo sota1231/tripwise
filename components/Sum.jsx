@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import './Sum.css';
 
-const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
+const Sum = ({ user, selectedProjectId, onDeleteInputData, setSelectedInputData }) => {
     const [inputData, setInputData] = useState([]);
     const navigate = useNavigate();
 
@@ -24,6 +24,11 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
         });
         return () => unsubscribe();
     }, [user, selectedProjectId]);
+
+    const handleSelect = (data) => {
+        setSelectedInputData(data);
+        navigate('/update');
+    };
 
     // 項目ごとの集計を計算
     const calculateSummary = () => {
@@ -67,18 +72,21 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
                     </div>
                 </div>
                 {inputData.map((data) => (
-                    <Link to="/update" key={data.id} className="table-row">
+                    <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
                         <div className="table-cell kind">{getKindName(data.kind)}</div>
                         <div className="table-cell name">{data.name || '名前入力なし'}</div>
                         <div className="table-cell money">¥{Number(data.money).toLocaleString()}</div>
                         <div className="table-cell memo"></div>
                         <button 
                             className="delete-button"
-                            onClick={() => onDeleteInputData(data.id)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteInputData(data.id);
+                            }}
                         >
                             削除
                         </button>
-                    </Link>
+                    </div>
                 ))}
             </div>
 

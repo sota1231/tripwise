@@ -18,6 +18,7 @@ function App() {
   const [project, setProject] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
+  const [selectedInputData, setSelectedInputData] = useState(null);
   const id = uuidv4();
 
   // 認証状態の監視 =================
@@ -111,12 +112,9 @@ function App() {
                 handleLogout={handleLogout}
                 user={user}
                 selectedProjectId={selectedProjectId}
-
               />
               <Footer />
-
             </>
-
           } />
           <Route path="/sum" element={
             <>
@@ -128,9 +126,9 @@ function App() {
                 user={user}
                 selectedProjectId={selectedProjectId}
                 onDeleteInputData={onDeleteInputData}
+                setSelectedInputData={setSelectedInputData}
               />
               <Footer />
-
             </>
           } />
           <Route path="/home" element={
@@ -139,29 +137,25 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <Home
-                handleLogout={handleLogout} />
+                handleLogout={handleLogout}
+              />
               <Footer />
-
             </>
-
           } />
-
           <Route path="/update" element={
             <>
               <Header
                 selectedProjectName={selectedProjectName}
               />
               <InputDataUpdate
-                handleLogout={handleLogout} />
+                user={user}
+                selectedInputData={selectedInputData}
+              />
               <Footer />
-
             </>
-
           } />
-
         </Routes>
       </BrowserRouter>
-
     </>
   )
 }
