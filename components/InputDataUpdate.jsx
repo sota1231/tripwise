@@ -7,6 +7,7 @@ import './InputDataUpdate.css';
 const InputDataUpdate = ({ user, selectedInputData }) => {
     const navigate = useNavigate();
     const [form, setForm] = useState({
+        modDate: '',
         kind: '',
         name: '',
         money: '',
@@ -20,6 +21,7 @@ const InputDataUpdate = ({ user, selectedInputData }) => {
         }
 
         setForm({
+            modDate: selectedInputData.modDate || '',
             kind: selectedInputData.kind || '',
             name: selectedInputData.name || '',
             money: selectedInputData.money || '',
@@ -40,11 +42,11 @@ const InputDataUpdate = ({ user, selectedInputData }) => {
         }
 
         const updatedItem = {
+            modDate: form.modDate,
             kind: form.kind,
             name: form.name,
             money: form.money,
             memo: form.memo,
-            modDate: Date.now(),
         };
 
         try {
@@ -59,6 +61,17 @@ const InputDataUpdate = ({ user, selectedInputData }) => {
     return (
         <div className="update-container">
             <form onSubmit={onUpdateItem} className="update-form">
+                <div className="form-group">
+                    <label className="form-label">日付</label>
+                    <input 
+                        type="date" 
+                        name="modDate" 
+                        value={form.modDate} 
+                        onChange={handleChange}
+                        className="form-input"
+                    />
+                </div>
+                
                 <div className="form-group">
                     <label className="form-label">項目</label>
                     <select 

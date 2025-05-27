@@ -18,6 +18,7 @@ const Input = ({ user, selectedProjectId }) => {
     }, [selectedProjectId, navigate])
 
     const [form, setForm] = useState({
+        modDate: '',
         kind: '',
         name: '',
         money: '',
@@ -36,8 +37,7 @@ const Input = ({ user, selectedProjectId }) => {
             name: form.name,
             money: form.money,
             memo: form.memo,
-            modDate: Date.now(),
-            createDate: Date.now(),
+            modDate: form.modDate,
             userId: user.uid,
             projectId: selectedProjectId,
         };
@@ -60,6 +60,16 @@ const Input = ({ user, selectedProjectId }) => {
     return (
         <div className="input-container">
             <form onSubmit={onAddItem} className="input-form">
+                <div className="form-group">
+                    <label className="form-label">日付</label>
+                    <input 
+                        type="date" 
+                        name="modDate" 
+                        value={form.modDate} 
+                        onChange={handleChange}
+                        className="form-input"
+                    />
+                </div>
                 <div className="form-group">
                     <label className="form-label">項目</label>
                     <select 
