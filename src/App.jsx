@@ -11,6 +11,7 @@ import Home from '../components/Home'
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'
 import Header from '../components/Header'
+import InputDataUpdate from '../components/InputDataUpdate'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -138,6 +139,19 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <Home
+                handleLogout={handleLogout} />
+              <Footer />
+
+            </>
+
+          } />
+
+          <Route path="/update" element={
+            <>
+              <Header
+                selectedProjectName={selectedProjectName}
+              />
+              <InputDataUpdate
                 handleLogout={handleLogout} />
               <Footer />
 
