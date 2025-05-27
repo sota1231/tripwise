@@ -1,0 +1,80 @@
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react'
+import { db } from '../firebase';
+
+const List = ({
+  handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectId
+}) => {
+
+  const [inputData, setInputData] = useState([]);
+
+  useEffect(() => {
+        if (!user) return;
+        const q = query(
+            collection(db, "input_data"),
+            where("userId", "==", user.uid),
+            where("projectId", "==", selectedProjectId)
+        );
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const input_data = [];
+            querySnapshot.forEach((doc) => {
+                input_data.push({ ...doc.data(), id: doc.id });
+            });
+            setInputData(input_data);
+        });
+        return () => unsubscribe();
+    }, [user, selectedProjectId]);
+
+
+  const handleSelect = (data) => {
+        setSelectedInputData(data);
+        navigate('/update');
+    };
+
+    // 項目名を日本語に変換
+    const getKindName = (kind) => {
+        const kinds = {
+            trafic: '交通・移動',
+            food: '食事・飲み物',
+            accommodation: '宿泊費'
+        };
+        return kinds[kind] || kind;
+    };
+
+  return (
+    <>
+      <div>List</div>
+      <div className="sum-container">
+        <div className="sum-table">
+          <div className="table-header">
+            <div className="table-row">
+              <div className="table-cell kind">項目</div>
+              <div className="table-cell name">品目</div>
+              <div className="table-cell money">金額</div>
+              <div className="table-cell memo"></div>
+            </div>
+          </div>
+          {inputData.map((data) => (
+            <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
+              <div className="table-cell kind">{getKindName(data.kind)}</div>
+              <div className="table-cell name">{data.name || '名前入力なし'}</div>
+              <div className="table-cell money">¥{Number(data.money).toLocaleString()}</div>
+              <div className="table-cell memo"></div>
+              <button
+                className="delete-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteInputData(data.id);
+                }}
+              >
+                削除
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default List

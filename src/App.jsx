@@ -7,7 +7,7 @@ import { auth, db } from '../firebase'
 import Footer from '../components/Footer'
 import Input from '../components/Input'
 import Sum from '../components/Sum'
-import Home from '../components/Home'
+import List from '../components/List'
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'
 import Header from '../components/Header'
@@ -131,13 +131,17 @@ function App() {
               <Footer />
             </>
           } />
-          <Route path="/home" element={
+          <Route path="/List" element={
             <>
               <Header
                 selectedProjectName={selectedProjectName}
               />
-              <Home
+              <List
                 handleLogout={handleLogout}
+                user={user}
+                selectedProjectId={selectedProjectId}
+                onDeleteInputData={onDeleteInputData}
+                setSelectedInputData={setSelectedInputData}
               />
               <Footer />
             </>

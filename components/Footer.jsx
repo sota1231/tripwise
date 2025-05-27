@@ -17,12 +17,13 @@ const Footer = () => {
       <Link to="/input" className={isActive('/input') ? 'active' : ''}>
         入力
       </Link>
+      <Link to="/List" className={isActive('/List') ? 'active' : ''}>
+        一覧
+      </Link>
       <Link to="/sum" className={isActive('/sum') ? 'active' : ''}>
         集計
       </Link>
-      <Link to="/home" className={isActive('/home') ? 'active' : ''}>
-        ホーム
-      </Link>
+      
     </div>
   )
 }
