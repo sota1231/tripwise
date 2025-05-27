@@ -9,12 +9,14 @@ import Input from '../components/Input'
 import Sum from '../components/Sum'
 import Home from '../components/Home'
 import { v4 as uuidv4 } from 'uuid';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'
+import Header from '../components/Header'
 
 function App() {
   const [user, setUser] = useState(null);
   const [project, setProject] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
   const id = uuidv4();
 
   // 認証状態の監視 =================
@@ -56,16 +58,30 @@ function App() {
       id: id
     };
     console.log(id);
-    await addDoc(collection(db, "project_data"), newProject); // 登録処理
+    await setDoc(doc(db, "project_data", id), newProject); // 登録処理
   };
 
-  // データ操作　プロジェクト削除 ===============
+  // データ操作　プロジェクト削除(紐付けデータ削除) ===============
   const onDeleteProject = async (id) => {
     if (!window.confirm('データの復元はできません。プロジェクトを削除してよろしいですか？')) {
       return;
     }
-    await deleteDoc(doc(db, "project_data", id)); // 削除処理
+    await deleteDoc(doc(db, "project_data", id)); // プロジェクト削除処理
+
+    const q = query(collection(db, "input_data"), where("projectId", "==", id));
+    const querySnapshot = await getDocs(q);
+
+    const deletePromises = querySnapshot.docs.map((document) =>
+      deleteDoc(doc(db, "input_data", document.id))
+    );
+
+    await Promise.all(deletePromises); // すべての削除が完了するまで待つ
   };
+
+  // データ操作　インプットデータ削除 ===============
+  const onDeleteInputData = async (id) => {
+    await deleteDoc(doc(db, "input_data", id)); // プロジェクト削除処理
+  }
 
   if (!user) {
     return <Login />;
@@ -82,35 +98,54 @@ function App() {
               project={project}
               onDeleteProject={onDeleteProject}
               setSelectedProjectId={setSelectedProjectId}
+              setSelectedProjectName={setSelectedProjectName}
             />
           } />
           <Route path="/input" element={
-            <Input
-              handleLogout={handleLogout} 
-              user={user}
-              selectedProjectId={selectedProjectId}
+            <>
+              <Header
+                selectedProjectName={selectedProjectName}
               />
+              <Input
+                handleLogout={handleLogout}
+                user={user}
+                selectedProjectId={selectedProjectId}
+
+              />
+              <Footer />
+
+            </>
+
           } />
           <Route path="/sum" element={
-            <Sum
-              handleLogout={handleLogout} 
-              user={user}
-              selectedProjectId={selectedProjectId}
+            <>
+              <Header
+                selectedProjectName={selectedProjectName}
               />
+              <Sum
+                handleLogout={handleLogout}
+                user={user}
+                selectedProjectId={selectedProjectId}
+                onDeleteInputData={onDeleteInputData}
+              />
+              <Footer />
+
+            </>
           } />
-          {/* <Route
-            path="/sum"
-            element={<Navigate to="/" replace />}
-          /><Route
-            path="/input"
-            element={<Navigate to="/" replace />}
-          /> */}
           <Route path="/home" element={
-            <Home
-              handleLogout={handleLogout} />
+            <>
+              <Header
+                selectedProjectName={selectedProjectName}
+              />
+              <Home
+                handleLogout={handleLogout} />
+              <Footer />
+
+            </>
+
           } />
+
         </Routes>
-        <Footer />
       </BrowserRouter>
 
     </>

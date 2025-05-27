@@ -2,12 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
-    setSelectedProjectId
+    setSelectedProjectId,setSelectedProjectName
 }) => {
     console.log(project)
 
-    const handleSelect = (id) => {
-        setSelectedProjectId(id);
+    const handleSelect = (data) => {
+        setSelectedProjectId(data.id);
+        setSelectedProjectName(data.name);
     };
 
     return (
@@ -21,7 +22,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                 >
                     <div className='title_deleteButton'>
                         <div className='wordlist-note-title'>
-                            <Link to="/sum" onClick={() => handleSelect(data.id)}>{data.name ? data.name : '名前入力なし'}</Link>
+                            <Link to="/sum" onClick={() => handleSelect(data)}>{data.name ? data.name : '名前入力なし'}</Link>
                             <button onClick={() => onDeleteProject(data.id)}>削除</button>
                         </div>
                     </div>

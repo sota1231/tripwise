@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebase';
 
-const Sum = ({ user, selectedProjectId }) => {
+const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
 
     // console.log(selectedProjectId);
     const [inputData, setInputData] = useState([]);
@@ -36,8 +36,8 @@ const Sum = ({ user, selectedProjectId }) => {
                 >
                     <div className='title_deleteButton'>
                         <div className='wordlist-note-title'>
-                            <Link to="/sum" onClick={() => handleSelect(data.id)}>{data.name ? data.name : '名前入力なし'}</Link>
-                            <button onClick={() => onDeleteProject(data.id)}>削除</button>
+                            <span>{data.name ? data.name : '名前入力なし'}</span>
+                            <button onClick={() => onDeleteInputData(data.id)}>削除</button>
                         </div>
                     </div>
                 </div>
