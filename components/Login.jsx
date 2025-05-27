@@ -3,6 +3,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLo
 import { auth, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
+
 const Login = ({ }) => {
     const signInWithGoogle = async () => {
         try {
@@ -14,9 +15,21 @@ const Login = ({ }) => {
     };
 
     return (
-        <div>
+        <div className="login"
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+            }}
+        >
             <p>ログインして始める</p>
-            <button onClick={signInWithGoogle}>Googleでログイン</button>
+            <button onClick={signInWithGoogle} style={{
+                margin: "5px",
+                padding: "5px",
+                borderRadius: "5px"
+            }}>Googleでログイン</button>
         </div>
     );
 };
