@@ -8,3 +8,24 @@
     top: 5%;
 } */
 
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 16px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin: 0;
+  padding: 0 16px;
+}
+

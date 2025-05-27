@@ -1,18 +1,14 @@
-import React from 'react'
+import React from 'react';
 import './Header.css';
-import { Link } from 'react-router-dom';
 
-const Header = ( selectedProjectName ) => {
-
-    console.log(selectedProjectName)
+const Header = ({ selectedProjectName }) => {
   return (
-    <>
-      <div className='header'>
-        <div>{selectedProjectName.selectedProjectName}</div>
-      </div>
-    </>
+    <header className="header">
+      <h1 className="header-title">
+        {selectedProjectName.selectedProjectName || '旅の記録'}
+      </h1>
+    </header>
+  );
+};
 
-  )
-}
-
-export default Header
+export default Header;
