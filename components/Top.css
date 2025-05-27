@@ -1,0 +1,94 @@
+.top-container {
+  padding: 16px;
+  padding-bottom: calc(80px + var(--safe-area-inset-bottom));
+}
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+
+.top-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.header-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.header-button:active {
+  opacity: 0.8;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-item {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.title_deleteButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wordlist-note-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.wordlist-note-title a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.wordlist-note-title span {
+  color: #8E8E93;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.delete-button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  background-color: #FF3B30;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.delete-button:active {
+  opacity: 0.8;
+}
