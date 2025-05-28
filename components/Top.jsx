@@ -9,36 +9,39 @@ import './Top.css';
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
     setSelectedProjectId, setSelectedProjectName
 }) => {
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [newName, setNewName] = useState('');
+    const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
+    const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
+    const [newName, setNewName] = useState(''); // onChageで入力中にセットされる
 
+    // プロジェクト押下で中に入る
     const handleSelect = (data) => {
         setSelectedProjectId(data.id);
         setSelectedProjectName(data.name);
     };
 
+    // 「…」を押下で発火
     const handleItemClick = (data, e) => {
         e.preventDefault();
-        setSelectedItem(data);
+        setSelectedItem(data); // selectedItemに選択したデータが格納
     };
 
+    // 名前を変更して保存ボタン押下で発火
     const handleNameChange = async () => {
-        if (!newName.trim()) return;
+        if (!newName.trim()) return; // スペースを取り除いて結果が残らなければ処理を中止
         
         try {
-            const docRef = doc(db, "projects", selectedItem.id);
+            const docRef = doc(db, "project_data", selectedItem.id);
             await updateDoc(docRef, {
                 name: newName
             });
-            setIsEditing(false);
-            setNewName('');
-            setSelectedItem(null);
+            // 名前の変更処理が終わったらモーダルのための情報を全て初期化
+            handleCloseMenu();
         } catch (error) {
             console.error("Error updating document: ", error);
         }
     };
 
+    // モーダルを閉じる
     const handleCloseMenu = () => {
         setSelectedItem(null);
         setIsEditing(false);
@@ -86,6 +89,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                 ))}
             </div>
 
+            {/* 「…」を押下でselectedItemがセットされることで表示される */}
             {selectedItem && !isEditing && (
                 <div className="popup-menu">
                     <div className="popup-content">
@@ -99,6 +103,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                 </div>
             )}
 
+            {/* 「名前を変更する」押下でisEdingにセットされることで表示される */}
             {isEditing && (
                 <div className="edit-popup">
                     <div className="edit-content">
