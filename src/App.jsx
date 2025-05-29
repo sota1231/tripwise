@@ -108,10 +108,10 @@ function App() {
             <ExchangeRate
               handleLogout={handleLogout}
               onAddProject={onAddProject}
-              project={project}
               onDeleteProject={onDeleteProject}
               setSelectedProjectId={setSelectedProjectId}
-              setSelectedProjectName={setSelectedProjectName}
+              selectedProjectId={selectedProjectId}
+              user={user}
             />
           } />
           <Route path="/input" element={
