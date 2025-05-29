@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'
 import Header from '../components/Header'
 import InputDataUpdate from '../components/InputDataUpdate'
+import ExchangeRate from '../components/ExchangeRate'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -95,6 +96,16 @@ function App() {
         <Routes>
           <Route path="/" element={
             <Top
+              handleLogout={handleLogout}
+              onAddProject={onAddProject}
+              project={project}
+              onDeleteProject={onDeleteProject}
+              setSelectedProjectId={setSelectedProjectId}
+              setSelectedProjectName={setSelectedProjectName}
+            />
+          } />
+          <Route path="/fx" element={
+            <ExchangeRate
               handleLogout={handleLogout}
               onAddProject={onAddProject}
               project={project}

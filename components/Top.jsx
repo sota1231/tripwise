@@ -67,7 +67,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                     <div key={data.id} className="project-item">
                         <div className="title_deleteButton">
                             <div className="wordlist-note-title">
-                                <Link to="/sum" onClick={(e) => handleSelect(data, e)}>
+                                <Link to="/fx" onClick={(e) => handleSelect(data, e)}>
                                     {data.name ? data.name : '名前入力なし'}
                                 </Link>
                                 <span>
