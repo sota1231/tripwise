@@ -1,4 +1,4 @@
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,9 +7,11 @@ import './Input.css';
 
 const Input = ({ user, selectedProjectId }) => {
 
-    console.log(selectedProjectId);
     const navigate = useNavigate();
+    const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
+    const [listFx, setListFx] = useState(null); // 為替情報取得・保存
 
+    // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
         if (!selectedProjectId) {
             navigate("/");
@@ -17,15 +19,26 @@ const Input = ({ user, selectedProjectId }) => {
 
     }, [selectedProjectId, navigate])
 
+    // formの準備
     const [form, setForm] = useState({
         modDate: '',
         kind: '',
         name: '',
-        money: '',
+        jpy: '',
+        fx: '',
         memo: '',
     });
+
+    // onChangeでformの値を変更
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    // onChangeでselectFxの値を変更,入力欄制御
+    const handleFXChange = (event) => {
+        const selected = event.target.value;
+        console.log('coin:'+ selected)
+        setSelectFx(selected);
     };
 
     // データ操作　プロジェクト登録 ===============
@@ -35,7 +48,8 @@ const Input = ({ user, selectedProjectId }) => {
         const newItem = {
             kind: form.kind,
             name: form.name,
-            money: form.money,
+            jpy: form.jpy,
+            fx: form.fx,
             memo: form.memo,
             modDate: form.modDate,
             userId: user.uid,
@@ -48,7 +62,8 @@ const Input = ({ user, selectedProjectId }) => {
             setForm({
                 kind: '',
                 name: '',
-                money: '',
+                jpy: '',
+                fx: '',
                 memo: ''
             })
         } catch (error) {
@@ -56,24 +71,42 @@ const Input = ({ user, selectedProjectId }) => {
         }
     };
 
+    // DBから為替情報取得
+    useEffect(() => {
+        if (!user) return;
+        const q = query(
+            collection(db, "select_fx"),
+            where("selectedProjectId", "==", selectedProjectId),
+            where("userId", "==", user.uid)
+        );
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const FxData = [];
+            querySnapshot.forEach((doc) => {
+                FxData.push({ ...doc.data(), id: doc.id }); // idデータを追加
+            });
+            setListFx(FxData);
+        });
+        return () => unsubscribe();
+    }, [user, selectedProjectId]);
+
 
     return (
         <div className="input-container">
             <form onSubmit={onAddItem} className="input-form">
                 <div className="form-group">
                     <label className="form-label">日付</label>
-                    <input 
-                        type="date" 
-                        name="modDate" 
-                        value={form.modDate} 
+                    <input
+                        type="date"
+                        name="modDate"
+                        value={form.modDate}
                         onChange={handleChange}
                         className="form-input"
                     />
                 </div>
                 <div className="form-group">
                     <label className="form-label">項目</label>
-                    <select 
-                        name="kind" 
+                    <select
+                        name="kind"
                         onChange={handleChange}
                         value={form.kind}
                         className="form-select"
@@ -87,10 +120,10 @@ const Input = ({ user, selectedProjectId }) => {
 
                 <div className="form-group">
                     <label className="form-label">品目</label>
-                    <input 
-                        type="text" 
-                        name="name" 
-                        value={form.name} 
+                    <input
+                        type="text"
+                        name="name"
+                        value={form.name}
                         onChange={handleChange}
                         className="form-input"
                         placeholder="品目を入力"
@@ -98,23 +131,62 @@ const Input = ({ user, selectedProjectId }) => {
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">金額</label>
-                    <input 
-                        type="number" 
-                        name="money" 
-                        value={form.money} 
-                        onChange={handleChange}
-                        className="form-input"
-                        placeholder="金額を入力"
-                    />
+                    <label className="form-label">通貨を選択</label>
+                    <select
+                        name="coin"
+                        onChange={handleFXChange}
+                        className="form-select"
+                        value={selectFx}
+                    >
+                        <option value="JPY">JPY</option>
+                        {Array.isArray(listFx) && listFx.length > 0 ? (
+                            listFx.map((data) => (
+                                <option key={data.id} value={data.code} className="project-item">
+                                    {data.code}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>通貨データが読み込まれていません</option>
+                        )}
+                    </select>
+
                 </div>
+
+                
+                    <div className="form-group">
+                        <label className="form-label">金額(円)</label>
+                        <input
+                            type="number"
+                            name="jpy"
+                            value={form.jpy}
+                            onChange={handleChange}
+                            className="form-input"
+                            placeholder={selectFx !== "JPY" ? '自動計算　入力不可！': ''}
+                            disabled={selectFx !== "JPY"}
+                        />
+                    </div>
+                {selectFx !== 'JPY' ? (
+
+                    <div className="form-group">
+                        <label className="form-label">海外金額</label>
+                        <input
+                            type="number"
+                            name="fx"
+                            value={form.fx}
+                            onChange={handleChange}
+                            className="form-input"
+                            placeholder="金額を入力"
+                        />
+                    </div>
+
+                ) : ('')}
 
                 <div className="form-group">
                     <label className="form-label">メモ</label>
-                    <input 
-                        type="text" 
-                        name="memo" 
-                        value={form.memo} 
+                    <input
+                        type="text"
+                        name="memo"
+                        value={form.memo}
                         onChange={handleChange}
                         className="form-input"
                         placeholder="メモを入力"
