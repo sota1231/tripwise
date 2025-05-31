@@ -13,7 +13,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
     const [newName, setNewName] = useState(''); // onChageで入力中にセットされる
 
-    // プロジェクト押下で中に入る
+    // プロジェクト押下で中に入る前にデータをセット
     const handleSelect = (data) => {
         setSelectedProjectId(data.id);
         setSelectedProjectName(data.name);

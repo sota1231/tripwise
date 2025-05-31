@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, limit, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'KRW', 'SGD', 'INR', 'MYR', 'THB'];
@@ -26,6 +26,26 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCurrencies, setSelectedCurrencies] = useState([]);
 
+  // プロジェクトID、userIdと一致している為替データがある場合はsumに飛ばす
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) return;
+    const q = query(
+      collection(db, "select_fx"),
+      where("selectedProjectId", "==", selectedProjectId),
+      where("userId", "==", user.uid),
+      limit(1)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      if (!querySnapshot.empty) {
+        navigate("/sum");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user, selectedProjectId]);
+
+  // 為替API発火
   useEffect(() => {
     const fetchRates = async () => {
       try {
