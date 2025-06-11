@@ -1,12 +1,14 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const List = ({
   handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectId
 }) => {
 
   const [inputData, setInputData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
         if (!user) return;

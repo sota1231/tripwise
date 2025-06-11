@@ -8,10 +8,9 @@ import './Input.css';
 const Input = ({ user, selectedProjectId }) => {
 
     const navigate = useNavigate();
+    const [listFx, setListFx] = useState(null); // 為替情報取得・保存
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
     const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
-    const [listFx, setListFx] = useState(null); // 為替情報取得・保存
-
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
@@ -26,6 +25,8 @@ const Input = ({ user, selectedProjectId }) => {
         modDate: '',
         kind: '',
         name: '',
+        coin: '',
+        rate: '',
         jpy: '',
         fx: '',
         memo: '',
@@ -64,6 +65,8 @@ const Input = ({ user, selectedProjectId }) => {
         const newItem = {
             kind: form.kind,
             name: form.name,
+            coin: selectFx,
+            rate: selectFxRate,
             jpy: form.jpy,
             fx: form.fx,
             memo: form.memo,
@@ -79,10 +82,14 @@ const Input = ({ user, selectedProjectId }) => {
                 modDate: '',
                 kind: '',
                 name: '',
+                coin: 'JPY',
+                rate: '',
                 jpy: '',
                 fx: '',
                 memo: ''
             })
+            setSelectFx('JPY')
+            setSelectFxRate(null)
         } catch (error) {
             console.error('登録失敗:', error);
         }
@@ -118,6 +125,7 @@ const Input = ({ user, selectedProjectId }) => {
                         value={form.modDate}
                         onChange={handleChange}
                         className="form-input"
+                        required
                     />
                 </div>
                 <div className="form-group">
@@ -127,6 +135,7 @@ const Input = ({ user, selectedProjectId }) => {
                         onChange={handleChange}
                         value={form.kind}
                         className="form-select"
+                        required
                     >
                         <option value="">選択してください</option>
                         <option value="trafic">交通・移動</option>
@@ -144,6 +153,7 @@ const Input = ({ user, selectedProjectId }) => {
                         onChange={handleChange}
                         className="form-input"
                         placeholder="品目を入力"
+                        required
                     />
                 </div>
 
@@ -153,7 +163,6 @@ const Input = ({ user, selectedProjectId }) => {
                         name="coin"
                         onChange={handleFXChange}
                         className="form-select"
-                        value={selectFx}
                     >
                         <option value="JPY">JPY</option>
                         {Array.isArray(listFx) && listFx.length > 0 ? (
@@ -197,7 +206,7 @@ const Input = ({ user, selectedProjectId }) => {
                     <input
                         type="number"
                         name="jpy"
-                        value={selectFx !== 'JPY' ? form.fx * selectFxRate : form.jpy}
+                        value={form.jpy}
                         onChange={handleChange}
                         className="form-input"
                         placeholder={selectFx !== "JPY" ? '自動計算　入力不可！' : ''}

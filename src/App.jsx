@@ -22,6 +22,7 @@ function App() {
   const [selectedInputData, setSelectedInputData] = useState(null);
   const id = uuidv4();
 
+
   // 認証状態の監視 =================
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -137,7 +138,6 @@ function App() {
                 user={user}
                 selectedProjectId={selectedProjectId}
                 onDeleteInputData={onDeleteInputData}
-                setSelectedInputData={setSelectedInputData}
               />
               <Footer />
             </>
@@ -165,6 +165,7 @@ function App() {
               <InputDataUpdate
                 user={user}
                 selectedInputData={selectedInputData}
+                selectedProjectId={selectedProjectId}
               />
               <Footer />
             </>

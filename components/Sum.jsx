@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import './Sum.css';
 
-const Sum = ({ user, selectedProjectId, onDeleteInputData, setSelectedInputData }) => {
+const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
     const [inputData, setInputData] = useState([]);
     const navigate = useNavigate();
 
@@ -25,11 +25,6 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData, setSelectedInputData 
         return () => unsubscribe();
     }, [user, selectedProjectId]);
 
-    const handleSelect = (data) => {
-        setSelectedInputData(data);
-        navigate('/update');
-    };
-
     // 項目ごとの集計を計算
     const calculateSummary = () => {
         const summary = {
@@ -40,7 +35,7 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData, setSelectedInputData 
         };
 
         inputData.forEach(item => {
-            const amount = Number(item.money) || 0;
+            const amount = Number(item.jpy) || 0;
             summary[item.kind] += amount;
             summary.total += amount;
         });
