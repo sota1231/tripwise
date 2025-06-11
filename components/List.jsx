@@ -51,14 +51,14 @@ const List = ({
               <div className="table-cell kind">項目</div>
               <div className="table-cell name">品目</div>
               <div className="table-cell money">金額</div>
-              <div className="table-cell memo"></div>
+              <div className="table-cell memo">　　　　　　　　　</div>
             </div>
           </div>
           {inputData.map((data) => (
             <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
               <div className="table-cell kind">{getKindName(data.kind)}</div>
               <div className="table-cell name">{data.name || '名前入力なし'}</div>
-              <div className="table-cell money">¥{Number(data.money).toLocaleString()}</div>
+              <div className="table-cell money">¥{Number(data.jpy).toLocaleString()}</div>
               <div className="table-cell memo"></div>
               <button
                 className="delete-button"

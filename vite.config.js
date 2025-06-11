@@ -1,10 +1,11 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   server: {
-    host: true  // ← これがないと外部からアクセスできない！
+    host: true
   },
   plugins: [
     react(),
@@ -31,6 +32,23 @@ export default defineConfig({
           }
         ]
       }
-    })
-  ]
+    }),
+    // ★ CSPを緩めるためのミドルウェア
+    {
+      name: 'custom-csp',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          res.setHeader(
+            'Content-Security-Policy',
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com; object-src 'self'; style-src 'self' 'unsafe-inline'"
+          );
+          next();
+        });
+      }
+    }
+  ],
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react'
+  }
 });

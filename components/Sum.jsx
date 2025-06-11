@@ -61,35 +61,7 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData, setSelectedInputData 
     };
 
     return (
-        <div className="sum-container">
-            <div className="sum-table">
-                <div className="table-header">
-                    <div className="table-row">
-                        <div className="table-cell kind">項目</div>
-                        <div className="table-cell name">品目</div>
-                        <div className="table-cell money">金額</div>
-                        <div className="table-cell memo"></div>
-                    </div>
-                </div>
-                {inputData.map((data) => (
-                    <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
-                        <div className="table-cell kind">{getKindName(data.kind)}</div>
-                        <div className="table-cell name">{data.name || '名前入力なし'}</div>
-                        <div className="table-cell money">¥{Number(data.money).toLocaleString()}</div>
-                        <div className="table-cell memo"></div>
-                        <button 
-                            className="delete-button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDeleteInputData(data.id);
-                            }}
-                        >
-                            削除
-                        </button>
-                    </div>
-                ))}
-            </div>
-
+        <div>
             <div className="summary-section">
                 <h2 className="summary-title">集計</h2>
                 <div className="summary-item">

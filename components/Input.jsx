@@ -9,7 +9,9 @@ const Input = ({ user, selectedProjectId }) => {
 
     const navigate = useNavigate();
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
+    const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
     const [listFx, setListFx] = useState(null); // 為替情報取得・保存
+
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
@@ -34,10 +36,24 @@ const Input = ({ user, selectedProjectId }) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    // JPY以外で
+    useEffect(() => {
+        if (selectFx !== 'JPY' && form.fx && selectFxRate) {
+            const calculatedJPY = Number(form.fx) * Number(selectFxRate);
+            setForm((prev) => ({
+                ...prev,
+                jpy: calculatedJPY.toFixed(0), // 小数点切り捨て or toFixed(2)など好みで
+            }));
+        }
+    }, [form.fx, selectFxRate, selectFx]);
+
     // onChangeでselectFxの値を変更,入力欄制御
     const handleFXChange = (event) => {
         const selected = event.target.value;
-        console.log('coin:'+ selected)
+        const rate = event.target.selectedOptions[0].getAttribute('data-rate');
+        console.log('coin:' + selected)
+        console.log('rate:' + rate)
+        setSelectFxRate(rate);
         setSelectFx(selected);
     };
 
@@ -60,6 +76,7 @@ const Input = ({ user, selectedProjectId }) => {
             await addDoc(collection(db, 'input_data'), newItem);
             console.log('登録成功:', newItem);
             setForm({
+                modDate: '',
                 kind: '',
                 name: '',
                 jpy: '',
@@ -141,7 +158,12 @@ const Input = ({ user, selectedProjectId }) => {
                         <option value="JPY">JPY</option>
                         {Array.isArray(listFx) && listFx.length > 0 ? (
                             listFx.map((data) => (
-                                <option key={data.id} value={data.code} className="project-item">
+                                <option
+                                    key={data.id}
+                                    value={data.code}
+                                    className="project-item"
+                                    data-rate={data.rate}
+                                >
                                     {data.code}
                                 </option>
                             ))
@@ -152,34 +174,36 @@ const Input = ({ user, selectedProjectId }) => {
 
                 </div>
 
-                
-                    <div className="form-group">
-                        <label className="form-label">金額(円)</label>
-                        <input
-                            type="number"
-                            name="jpy"
-                            value={form.jpy}
-                            onChange={handleChange}
-                            className="form-input"
-                            placeholder={selectFx !== "JPY" ? '自動計算　入力不可！': ''}
-                            disabled={selectFx !== "JPY"}
-                        />
-                    </div>
-                {selectFx !== 'JPY' ? (
 
-                    <div className="form-group">
-                        <label className="form-label">海外金額</label>
-                        <input
-                            type="number"
-                            name="fx"
-                            value={form.fx}
-                            onChange={handleChange}
-                            className="form-input"
-                            placeholder="金額を入力"
-                        />
-                    </div>
+                <div className="form-group">
+                    {selectFx !== 'JPY' ? (
+                        <div className="form-group">
+                            <label className="form-label">海外金額({selectFx})</label>
+                            <input
+                                type="number"
+                                name="fx"
+                                value={form.fx}
+                                onChange={handleChange}
+                                className="form-input"
+                                placeholder="金額を入力"
+                            />
+                        </div>
 
-                ) : ('')}
+                    ) : ('')}
+                    <label className="form-label">金額(日本円){selectFx !== "JPY" && (
+                        <> ※自動計算されるため入力できません</>
+                    )}</label>
+
+                    <input
+                        type="number"
+                        name="jpy"
+                        value={selectFx !== 'JPY' ? form.fx * selectFxRate : form.jpy}
+                        onChange={handleChange}
+                        className="form-input"
+                        placeholder={selectFx !== "JPY" ? '自動計算　入力不可！' : ''}
+                        readOnly={selectFx !== "JPY"}
+                    />
+                </div>
 
                 <div className="form-group">
                     <label className="form-label">メモ</label>
