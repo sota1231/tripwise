@@ -17,7 +17,7 @@ import ExchangeRate from '../components/ExchangeRate'
 function App() {
   const [user, setUser] = useState(null);
   const [project, setProject] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedProjectRecord, setSelectedProjectRecord] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
   const [selectedInputData, setSelectedInputData] = useState(null);
   const id = uuidv4();
@@ -37,18 +37,32 @@ function App() {
 
   // データ操作　プロジェクト取得 ===============
   const fetchData = async () => {
-    const q = query(
-      collection(db, "project_data"),
-      where("userId", "==", user.uid)
-    );
     try {
-      const querySnapshot = await getDocs(q);
+      const projectQuery = query(
+        collection(db, "project_data"),
+        where("userId", "==", user.uid)
+      );
+
+      const querySnapshot = await getDocs(projectQuery);
       const projectData = [];
       querySnapshot.forEach((doc) => {
         projectData.push({ ...doc.data(), id: doc.id });
       });
       setProject(projectData);
-      console.log('更新完了')
+      console.log('プロジェクトの更新完了')
+
+      // // FXデータの取得
+      // const fxQuery = query(
+      //   collection(db, "select_fx"),
+      //   where("userId", "==", user.uid),
+      // );
+      // const fxSnapshot = await getDocs(fxQuery);
+      // const fx_data = [];
+      // fxSnapshot.forEach((doc) => {
+      //   fx_data.push({ ...doc.data(), id: doc.id });
+      // });
+      // console.log('FXデータ:', fx_data)
+
     } catch (e) {
       console.error("データの取得に失敗しました", e);
     }
@@ -71,11 +85,12 @@ function App() {
   // データ操作　プロジェクト登録 ===============
   const onAddProject = async () => {
     const newProject = {
-      name: 'test',
+      name: '名前を登録する　→',
       modDate: Date.now(),
       createDate: Date.now(),
       userId: user.uid,  // ユーザーIDを追加
-      id: id
+      id: id,
+      fxRates: ''
     };
     console.log(id);
     await setDoc(doc(db, "project_data", id), newProject); // 登録処理
@@ -117,7 +132,7 @@ function App() {
               onAddProject={onAddProject}
               project={project}
               onDeleteProject={onDeleteProject}
-              setSelectedProjectId={setSelectedProjectId}
+              setSelectedProjectRecord={setSelectedProjectRecord}
               setSelectedProjectName={setSelectedProjectName}
               fetchData={fetchData}
             />
@@ -127,8 +142,8 @@ function App() {
               handleLogout={handleLogout}
               onAddProject={onAddProject}
               onDeleteProject={onDeleteProject}
-              setSelectedProjectId={setSelectedProjectId}
-              selectedProjectId={selectedProjectId}
+              setSelectedProjectRecord={setSelectedProjectRecord}
+              // selectedProjectId={selectedProjectId}
               user={user}
             />
           } />
@@ -138,9 +153,8 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <Input
-                handleLogout={handleLogout}
                 user={user}
-                selectedProjectId={selectedProjectId}
+                selectedProjectRecord={selectedProjectRecord}
               />
               <Footer />
             </>
@@ -153,8 +167,8 @@ function App() {
               <Sum
                 handleLogout={handleLogout}
                 user={user}
-                selectedProjectId={selectedProjectId}
                 onDeleteInputData={onDeleteInputData}
+                selectedProjectRecord={selectedProjectRecord}
               />
               <Footer />
             </>
@@ -167,8 +181,9 @@ function App() {
               <List
                 handleLogout={handleLogout}
                 user={user}
-                selectedProjectId={selectedProjectId}
+                selectedProjectRecord={selectedProjectRecord}
                 onDeleteInputData={onDeleteInputData}
+                selectedInputData={selectedInputData}
                 setSelectedInputData={setSelectedInputData}
               />
               <Footer />
@@ -182,7 +197,7 @@ function App() {
               <InputDataUpdate
                 user={user}
                 selectedInputData={selectedInputData}
-                selectedProjectId={selectedProjectId}
+                selectedProjectRecord={selectedProjectRecord}
               />
               <Footer />
             </>

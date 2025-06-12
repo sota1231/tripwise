@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import './InputDataUpdate.css';
 
 
-const InputDataUpdate = ({ user, selectedInputData, selectedProjectId
+const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, project
     // , selectFx, setSelectFx, selectFxRate, setSelectFxRate 
 }) => {
     const navigate = useNavigate();
@@ -106,22 +106,22 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectId
     };
 
     // DBから為替情報取得
-    useEffect(() => {
-        if (!user) return;
-        const q = query(
-            collection(db, "select_fx"),
-            where("selectedProjectId", "==", selectedProjectId),
-            where("userId", "==", user.uid)
-        );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const FxData = [];
-            querySnapshot.forEach((doc) => {
-                FxData.push({ ...doc.data(), id: doc.id }); // idデータを追加
-            });
-            setListFx(FxData);
-        });
-        return () => unsubscribe();
-    }, [user, selectedProjectId]);
+    // useEffect(() => {
+    //     if (!user) return;
+    //     const q = query(
+    //         collection(db, "select_fx"),
+    //         where("selectedProjectId", "==", selectedProjectRecord.id),
+    //         where("userId", "==", user.uid)
+    //     );
+    //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    //         const FxData = [];
+    //         querySnapshot.forEach((doc) => {
+    //             FxData.push({ ...doc.data(), id: doc.id }); // idデータを追加
+    //         });
+    //         setListFx(FxData);
+    //     });
+    //     return () => unsubscribe();
+    // }, [user, selectedProjectRecord]);
 
     return (
         <div className="update-container">
@@ -170,23 +170,16 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectId
                         name="coin"
                         onChange={handleFXChange}
                         className="form-select"
-                        value={selectFx}
+                        value={form.coin}
                     >
                         <option value="JPY">JPY</option>
-                        {Array.isArray(listFx) && listFx.length > 0 ? (
-                            listFx.map((data) => (
-                                <option
-                                    key={data.id}
-                                    value={data.code}
-                                    className="project-item"
-                                    data-rate={data.rate}
-                                >
-                                    {data.code}
+
+                        {selectedProjectRecord.fxRates &&
+                            Object.entries(selectedProjectRecord.fxRates).map(([key, value]) => (
+                                <option key={key} value={key} data-rate={value}>
+                                    {key}
                                 </option>
-                            ))
-                        ) : (
-                            <option disabled>通貨データが読み込まれていません</option>
-                        )}
+                            ))}
                     </select>
 
                 </div>

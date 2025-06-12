@@ -6,43 +6,20 @@ import './Input.css';
 import useOnlineStatus from './useOnlineStatus';
 import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
 
-const Input = ({ user, selectedProjectId }) => {
+const Input = ({ user, selectedProjectRecord }) => {
 
     const navigate = useNavigate();
-    const [listFx, setListFx] = useState(null); // 為替情報取得・保存
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
     const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
     const isOnline = useOnlineStatus(); // オンライン状況
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
-        if (!selectedProjectId) {
+        if (!selectedProjectRecord) {
             navigate("/");
         }
 
-    }, [selectedProjectId, navigate])
-
-    // オンラインになったらローカルのデータを登録する
-    // useEffect(() => {
-    //     if (isOnline) {
-    //         const sync = async () => {
-    //             const records = await getAllLocalRecords();
-    //             if (records.length === 0) return;
-
-    //             try {
-    //                 const batch = records.map((record) =>
-    //                     addDoc(collection(db, 'input_data'), record)
-    //                 );
-    //                 await Promise.all(batch);
-    //                 await clearLocalRecords();
-    //                 console.log("ローカルデータをDBに登録完了");
-    //             } catch (e) {
-    //                 console.error("ローカルデータをDBに登録完了失敗: ", e);
-    //             }
-    //         };
-    //         sync();
-    //     } else return
-    // }, [isOnline])
+    }, [selectedProjectRecord, navigate])
 
     // formの準備
     const [form, setForm] = useState({
@@ -96,10 +73,9 @@ const Input = ({ user, selectedProjectId }) => {
             memo: form.memo,
             modDate: form.modDate,
             userId: user.uid,
-            projectId: selectedProjectId,
+            projectId: selectedProjectRecord.id,
         };
 
-        console.log('onLine: ' + isOnline)
         try {
 
             await addLocalRecord(newItem);
@@ -121,25 +97,6 @@ const Input = ({ user, selectedProjectId }) => {
             console.error('登録失敗:', error);
         }
     };
-
-    // DBから為替情報取得
-    useEffect(() => {
-        if (!user) return;
-        const q = query(
-            collection(db, "select_fx"),
-            where("selectedProjectId", "==", selectedProjectId),
-            where("userId", "==", user.uid)
-        );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const FxData = [];
-            querySnapshot.forEach((doc) => {
-                FxData.push({ ...doc.data(), id: doc.id }); // idデータを追加
-            });
-            setListFx(FxData);
-        });
-        return () => unsubscribe();
-    }, [user, selectedProjectId]);
-
 
     return (
         <div className="input-container">
@@ -192,20 +149,13 @@ const Input = ({ user, selectedProjectId }) => {
                         className="form-select"
                     >
                         <option value="JPY">JPY</option>
-                        {Array.isArray(listFx) && listFx.length > 0 ? (
-                            listFx.map((data) => (
-                                <option
-                                    key={data.id}
-                                    value={data.code}
-                                    className="project-item"
-                                    data-rate={data.rate}
-                                >
-                                    {data.code}
+
+                        {selectedProjectRecord.fxRates &&
+                            Object.entries(selectedProjectRecord.fxRates).map(([key, value]) => (
+                                <option key={key} value={key} data-rate={value}>
+                                    {key}
                                 </option>
-                            ))
-                        ) : (
-                            <option disabled>通貨データが読み込まれていません</option>
-                        )}
+                            ))}
                     </select>
 
                 </div>

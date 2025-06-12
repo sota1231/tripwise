@@ -7,7 +7,7 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import './Top.css';
 
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
-    setSelectedProjectId, setSelectedProjectName, fetchData
+    setSelectedProjectRecord, setSelectedProjectName, fetchData
 }) => {
     const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
@@ -15,7 +15,8 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
 
     // プロジェクト押下で中に入る前にデータをセット
     const handleSelect = (data) => {
-        setSelectedProjectId(data.id);
+        console.log('aaa')
+        setSelectedProjectRecord(data);
         setSelectedProjectName(data.name);
     };
 
@@ -70,7 +71,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                     <div key={data.id} className="project-item">
                         <div className="title_deleteButton">
                             <div className="wordlist-note-title">
-                                <Link to="/fx" onClick={(e) => handleSelect(data, e)}>
+                                <Link to={data.fxRates ? "/sum" : "/fx" } onClick={(e) => handleSelect(data, e)}>
                                     {data.name ? data.name : '名前入力なし'}
                                 </Link>
                                 <span>

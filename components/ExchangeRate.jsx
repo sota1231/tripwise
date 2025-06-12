@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addDoc, collection, limit, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, limit, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import './ExchangeRate.css';
@@ -34,22 +34,22 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
   };
 
   // プロジェクトID、userIdと一致している為替データがある場合はsumに飛ばす
-  useEffect(() => {
-    if (!user) return;
-    const q = query(
-      collection(db, "select_fx"),
-      where("selectedProjectId", "==", selectedProjectId),
-      where("userId", "==", user.uid),
-      limit(1)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      if (!querySnapshot.empty) {
-        navigate("/sum");
-      }
-    });
+  // useEffect(() => {
+  //   if (!user) return;
+  //   const q = query(
+  //     collection(db, "select_fx"),
+  //     where("selectedProjectId", "==", selectedProjectId),
+  //     where("userId", "==", user.uid),
+  //     limit(1)
+  //   );
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     if (!querySnapshot.empty) {
+  //       navigate("/sum");
+  //     }
+  //   });
 
-    return () => unsubscribe();
-  }, [user, selectedProjectId]);
+  //   return () => unsubscribe();
+  // }, [user, selectedProjectId]);
 
   // 為替API発火
   useEffect(() => {
@@ -91,23 +91,28 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
     );
   };
 
-  // 登録ボタン押下時の処理
+
+
   const handleSubmit = async () => {
-    const selectedData = selectedCurrencies.map(code => {
-      const rate = rates[code];
-      const country = currencyList.find(c => c.code === code)?.country || '';
-      return { code, country, rate, userId, selectedProjectId };
-    });
+    if (selectedCurrencies.length === 0) {
+      alert("通貨を選択してください");
+      return;
+    }
+
+    const selectedFxRates = selectedCurrencies.reduce((acc, code) => {
+      acc[code] = rates[code];
+      return acc;
+    }, {});
 
     try {
-      const collectionRef = collection(db, 'select_fx');
-      for (const item of selectedData) {
-        await addDoc(collectionRef, item);
-      }
-      alert('通貨情報を保存しました');
+      const projectDocRef = doc(db, "project_data", selectedProjectId);
+      await updateDoc(projectDocRef, {
+        fxRates: selectedFxRates
+      });
+      alert("為替情報をプロジェクトに保存しました");
     } catch (err) {
-      console.error('保存エラー:', err);
-      alert('保存に失敗しました');
+      console.error("保存エラー:", err);
+      alert("保存に失敗しました");
     }
   };
 
@@ -143,9 +148,13 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
             <button onClick={handleBack} className="back-button">
               戻る
             </button>
-            <Link to="/sum" className="submit-button" onClick={handleSubmit}>
+            <button className="submit-button" onClick={
+              async () => {
+                await handleSubmit();
+                navigate('/sum');
+              }}>
               登録する
-            </Link>
+            </button>
           </div>
         </>
       )}

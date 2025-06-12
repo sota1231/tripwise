@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { clearLocalRecords, getAllLocalRecords } from './LocalInputData';
 
 const List = ({
-  handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectId
+  handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectRecord
 }) => {
 
   const [inputData, setInputData] = useState([]);
@@ -16,7 +16,7 @@ const List = ({
     const q = query(
       collection(db, "input_data"),
       where("userId", "==", user.uid),
-      where("projectId", "==", selectedProjectId)
+      where("projectId", "==", selectedProjectRecord.id)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const input_data = [];
@@ -26,7 +26,7 @@ const List = ({
       setInputData(input_data);
     });
     return () => unsubscribe();
-  }, [user, selectedProjectId]);
+  }, [user, selectedProjectRecord]);
 
 
   const handleSelect = (data) => {

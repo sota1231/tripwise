@@ -4,16 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import './Sum.css';
 
-const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
+const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
     const [inputData, setInputData] = useState([]);
     const navigate = useNavigate();
 
+    console.log('selectedProjectRecord: '+selectedProjectRecord.id)
     useEffect(() => {
         if (!user) return;
         const q = query(
             collection(db, "input_data"),
             where("userId", "==", user.uid),
-            where("projectId", "==", selectedProjectId)
+            where("projectId", "==", selectedProjectRecord.id)
         );
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const input_data = [];
@@ -23,7 +24,7 @@ const Sum = ({ user, selectedProjectId, onDeleteInputData }) => {
             setInputData(input_data);
         });
         return () => unsubscribe();
-    }, [user, selectedProjectId]);
+    }, [user, selectedProjectRecord]);
 
     // 項目ごとの集計を計算
     const calculateSummary = () => {
