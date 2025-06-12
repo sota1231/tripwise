@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { addDoc, collection, limit, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
+import './ExchangeRate.css';
 
 
 const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'KRW', 'SGD', 'INR', 'MYR', 'THB'];
@@ -25,9 +26,14 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
   const [rates, setRates] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedCurrencies, setSelectedCurrencies] = useState([]);
+  const navigate = useNavigate();
+
+  // 戻るボタンの処理
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   // プロジェクトID、userIdと一致している為替データがある場合はsumに飛ばす
-  const navigate = useNavigate();
   useEffect(() => {
     if (!user) return;
     const q = query(
@@ -107,34 +113,40 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
 
 
   return (
-    <div>
-      <h2>各国通貨1単位 → 日本円（JPY）</h2>
+    <div className="exchange-rate-container">
+      <h2 className="exchange-rate-title">各国通貨1単位 → 日本円（JPY）</h2>
       {loading ? (
-        <p>読み込み中...</p>
+        <p className="loading-message">読み込み中...</p>
       ) : (
         <>
-          <ul>
+          <ul className="currency-list">
             {Object.entries(rates).map(([currency, rate]) => {
               const country = currencyList.find(c => c.code === currency)?.country || '';
               return (
-                <li key={currency}>
-                  <label>
+                <li key={currency} className="currency-item">
+                  <label className="currency-label">
                     <input
                       type='checkbox'
+                      className="currency-checkbox"
                       checked={selectedCurrencies.includes(currency)}
                       onChange={() => handleCheckboxChange(currency)}
                     />
-                    {country}（{currency}）: 1 {currency} = {rate} JPY
+                    <span className="currency-info">
+                      {country}（{currency}）: 1 {currency} = {rate} JPY
+                    </span>
                   </label>
                 </li>
               );
             })}
           </ul>
-          <Link to="/sum">
-            <button type='button' onClick={handleSubmit}>
-              登録する
+          <div className="button-container">
+            <button onClick={handleBack} className="back-button">
+              戻る
             </button>
-          </Link>
+            <Link to="/sum" className="submit-button" onClick={handleSubmit}>
+              登録する
+            </Link>
+          </div>
         </>
       )}
     </div>
