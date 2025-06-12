@@ -36,20 +36,36 @@ function App() {
   };
 
   // データ操作　プロジェクト取得 ===============
-  useEffect(() => {
-    if (!user) return;
+  const fetchData = async () => {
     const q = query(
       collection(db, "project_data"),
       where("userId", "==", user.uid)
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    try {
+      const querySnapshot = await getDocs(q);
       const projectData = [];
       querySnapshot.forEach((doc) => {
-        projectData.push({ ...doc.data(), id: doc.id }); // idデータを追加
+        projectData.push({ ...doc.data(), id: doc.id });
       });
       setProject(projectData);
-    });
-    return () => unsubscribe();
+      console.log('更新完了')
+    } catch (e) {
+      console.error("データの取得に失敗しました", e);
+    }
+  }
+
+  useEffect(() => {
+    if (!user) return;
+    fetchData();
+    // 🌟onSnapshotによるリアルタイム更新
+    // const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    //   const projectData = [];
+    //   querySnapshot.forEach((doc) => {
+    //     projectData.push({ ...doc.data(), id: doc.id }); // idデータを追加
+    //   });
+    //   setProject(projectData);
+    // });
+    // return () => unsubscribe();
   }, [user]);
 
   // データ操作　プロジェクト登録 ===============
@@ -103,6 +119,7 @@ function App() {
               onDeleteProject={onDeleteProject}
               setSelectedProjectId={setSelectedProjectId}
               setSelectedProjectName={setSelectedProjectName}
+              fetchData={fetchData}
             />
           } />
           <Route path="/fx" element={

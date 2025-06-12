@@ -7,7 +7,7 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import './Top.css';
 
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
-    setSelectedProjectId, setSelectedProjectName
+    setSelectedProjectId, setSelectedProjectName, fetchData
 }) => {
     const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
@@ -58,6 +58,9 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                     </button>
                     <button className="header-button" onClick={handleLogout}>
                         ログアウト
+                    </button>
+                    <button className="header-button" onClick={fetchData}>
+                        画面更新
                     </button>
                 </div>
             </div>
