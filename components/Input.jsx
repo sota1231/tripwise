@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Input.css';
-
+import useOnlineStatus from './useOnlineStatus';
+import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
 
 const Input = ({ user, selectedProjectId }) => {
 
@@ -11,6 +12,7 @@ const Input = ({ user, selectedProjectId }) => {
     const [listFx, setListFx] = useState(null); // 為替情報取得・保存
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
     const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
+    const isOnline = useOnlineStatus(); // オンライン状況
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
@@ -19,6 +21,28 @@ const Input = ({ user, selectedProjectId }) => {
         }
 
     }, [selectedProjectId, navigate])
+
+    // オンラインになったらローカルのデータを登録する
+    // useEffect(() => {
+    //     if (isOnline) {
+    //         const sync = async () => {
+    //             const records = await getAllLocalRecords();
+    //             if (records.length === 0) return;
+
+    //             try {
+    //                 const batch = records.map((record) =>
+    //                     addDoc(collection(db, 'input_data'), record)
+    //                 );
+    //                 await Promise.all(batch);
+    //                 await clearLocalRecords();
+    //                 console.log("ローカルデータをDBに登録完了");
+    //             } catch (e) {
+    //                 console.error("ローカルデータをDBに登録完了失敗: ", e);
+    //             }
+    //         };
+    //         sync();
+    //     } else return
+    // }, [isOnline])
 
     // formの準備
     const [form, setForm] = useState({
@@ -75,9 +99,12 @@ const Input = ({ user, selectedProjectId }) => {
             projectId: selectedProjectId,
         };
 
+        console.log('onLine: ' + isOnline)
         try {
-            await addDoc(collection(db, 'input_data'), newItem);
-            console.log('登録成功:', newItem);
+
+            await addLocalRecord(newItem);
+            console.log('ローカル保存完了')
+            // await addDoc(collection(db, 'input_data'), newItem);
             setForm({
                 modDate: '',
                 kind: '',
