@@ -56,10 +56,10 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                     <button className="header-button" onClick={onAddProject}>
                         新規追加
                     </button>
-                    <button className="header-button" onClick={handleLogout}>
+                    <button className="header-button red" onClick={handleLogout}>
                         ログアウト
                     </button>
-                    <button className="header-button" onClick={fetchData}>
+                    <button className="header-button green" onClick={fetchData}>
                         画面更新
                     </button>
                 </div>
