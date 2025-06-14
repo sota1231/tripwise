@@ -6,7 +6,7 @@ import './Input.css';
 import useOnlineStatus from './useOnlineStatus';
 import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
 
-const Input = ({ user, selectedProjectRecord }) => {
+const Input = ({ user, selectedProjectRecord, formatted }) => {
 
     const navigate = useNavigate();
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
@@ -23,7 +23,7 @@ const Input = ({ user, selectedProjectRecord }) => {
 
     // formの準備
     const [form, setForm] = useState({
-        modDate: '',
+        modDate: formatted,
         kind: '',
         name: '',
         coin: '',
@@ -81,8 +81,8 @@ const Input = ({ user, selectedProjectRecord }) => {
             await addLocalRecord(newItem);
             console.log('ローカル保存完了')
             // await addDoc(collection(db, 'input_data'), newItem);
-            setForm({
-                modDate: '',
+            setForm((prev) => ({
+                modDate: prev.modDate,
                 kind: '',
                 name: '',
                 coin: 'JPY',
@@ -90,7 +90,7 @@ const Input = ({ user, selectedProjectRecord }) => {
                 jpy: '',
                 fx: '',
                 memo: ''
-            })
+            }))
             setSelectFx('JPY')
             setSelectFxRate(null)
         } catch (error) {
@@ -147,6 +147,7 @@ const Input = ({ user, selectedProjectRecord }) => {
                         name="coin"
                         onChange={handleFXChange}
                         className="form-select"
+                        value={selectFx}
                     >
                         <option value="JPY">JPY</option>
 

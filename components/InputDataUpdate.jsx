@@ -22,11 +22,11 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
         fx: '',
         memo: '',
     });
-    
+
 
     useEffect(() => {
         if (!selectedInputData) {
-            navigate('/sum');
+            navigate('/list');
             return;
         }
 
@@ -49,11 +49,10 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
 
     // JPY以外で
     useEffect(() => {
-        console.log('selectFxRate1: '+ selectFxRate)
-        if (
-            selectedInputData.coin !== 'JPY' && selectFxRate
-        ) {
-            console.log('selectFxRate2: '+ selectFxRate)
+        console.log('selectFxRate1: ' + selectFxRate)
+        console.log('selectFxRate1: ' + form.coin)
+        if (form.coin !== 'JPY' && selectFxRate) {
+            console.log('selectFxRate2: ' + selectFxRate)
             const initialJPY = Number(form.fx) * Number(selectFxRate);
             setForm((prev) => ({
                 ...prev,
@@ -71,11 +70,15 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
         setSelectFxRate(rate);
         setSelectFx(selected);
         setForm((prev) => ({
-                ...prev,
-                rate: rate,
-                coin: selected
-            }));
+            ...prev,
+            rate: rate,
+            coin: selected
+        }));
     };
+
+    useEffect(() => {
+        console.log('form.coinが更新されました:', form.coin);
+    }, [form.coin]);
 
     const onUpdateItem = async (e) => {
         e.preventDefault();
@@ -99,7 +102,7 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
         try {
             await updateDoc(doc(db, 'input_data', selectedInputData.id), updatedItem);
             console.log('更新成功:', updatedItem);
-            navigate('/sum');
+            navigate('/input');
         } catch (error) {
             console.error('更新失敗:', error);
         }
@@ -231,7 +234,7 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
                     <button
                         type="button"
                         className="cancel-button"
-                        onClick={() => navigate('/sum')}
+                        onClick={() => navigate('/list')}
                     >
                         キャンセル
                     </button>

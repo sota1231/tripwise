@@ -22,6 +22,9 @@ function App() {
   const [selectedInputData, setSelectedInputData] = useState(null);
   const id = uuidv4();
 
+  // 今日の日付データ
+  const today = new Date();
+  const formatted = today.toISOString().slice(0, 10); // "YYYY-MM-DD"形式
 
   // 認証状態の監視 =================
   useEffect(() => {
@@ -86,7 +89,7 @@ function App() {
   const onAddProject = async () => {
     const newProject = {
       name: '名前を登録する　→',
-      modDate: Date.now(),
+      modDate: formatted,
       createDate: Date.now(),
       userId: user.uid,  // ユーザーIDを追加
       id: id,
@@ -135,6 +138,7 @@ function App() {
               setSelectedProjectRecord={setSelectedProjectRecord}
               setSelectedProjectName={setSelectedProjectName}
               fetchData={fetchData}
+              formatted={formatted}
             />
           } />
           <Route path="/fx" element={
@@ -142,7 +146,7 @@ function App() {
               handleLogout={handleLogout}
               onAddProject={onAddProject}
               onDeleteProject={onDeleteProject}
-              setSelectedProjectRecord={setSelectedProjectRecord}
+              selectedProjectRecord={selectedProjectRecord}
               // selectedProjectId={selectedProjectId}
               user={user}
             />
@@ -155,6 +159,7 @@ function App() {
               <Input
                 user={user}
                 selectedProjectRecord={selectedProjectRecord}
+                formatted={formatted}
               />
               <Footer />
             </>

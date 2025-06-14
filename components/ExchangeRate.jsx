@@ -21,7 +21,7 @@ const currencyList = [
   { code: 'THB', country: 'タイ' },
 ];
 
-const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
+const ExchangeRateToJPY = ({ selectedProjectRecord, user }) => {
   const userId = user.uid;
   const [rates, setRates] = useState({});
   const [loading, setLoading] = useState(true);
@@ -105,7 +105,7 @@ const ExchangeRateToJPY = ({ selectedProjectId, user }) => {
     }, {});
 
     try {
-      const projectDocRef = doc(db, "project_data", selectedProjectId);
+      const projectDocRef = doc(db, "project_data", selectedProjectRecord.id);
       await updateDoc(projectDocRef, {
         fxRates: selectedFxRates
       });

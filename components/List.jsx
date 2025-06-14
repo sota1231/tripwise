@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { clearLocalRecords, getAllLocalRecords } from './LocalInputData';
+import './List.css';
 
 const List = ({
   handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectRecord
@@ -64,8 +65,8 @@ const List = ({
 
 return (
   <>
-    <div>
-      <button onClick={localDataToDB}>DBに保存する</button>
+    <div className="button-container">
+      <button className="save-button" onClick={localDataToDB}>DBに保存する</button>
     </div>
     <div className="sum-container">
       <div className="sum-table">
