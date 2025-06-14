@@ -1,6 +1,6 @@
 .update-container {
   padding: 16px;
-  padding-top: calc(60px + env(safe-area-inset-top, 0px));
+  /* padding-top: calc(60px + env(safe-area-inset-top, 0px)); */
   padding-bottom: calc(80px + var(--safe-area-inset-bottom));
 }
 
@@ -73,7 +73,7 @@
 }
 
 .update-button {
-  background-color: var(--primary-color);
+  background-color: #4CAF50;
   color: white;
 }
 

@@ -28,7 +28,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
     // 名前を変更して保存ボタン押下で発火
     const handleNameChange = async () => {
         if (!newName.trim()) return; // スペースを取り除いて結果が残らなければ処理を中止
-        
+
         try {
             const docRef = doc(db, "project_data", selectedItem.id);
             await updateDoc(docRef, {
@@ -50,39 +50,42 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
 
     return (
         <div className="top-container">
-            <div className="top-header">
-                <h1 className="top-title">旅の選択</h1>
+            <div>
+                <div className="top-header">
+                    <h1 className="top-title">旅行を選択</h1>
+                    <button className="header-button red" onClick={handleLogout}>
+                        ログアウト
+                    </button>
+                </div>
                 <div className="header-buttons">
                     <button className="header-button" onClick={onAddProject}>
                         新規追加
                     </button>
-                    <button className="header-button red" onClick={handleLogout}>
-                        ログアウト
-                    </button>
+
                     <button className="header-button green" onClick={fetchData}>
                         画面更新
                     </button>
                 </div>
             </div>
-            
+
             <div className="project-list">
                 {project.map((data) => (
                     <div key={data.id} className="project-item">
                         <div className="title_deleteButton">
                             <div className="wordlist-note-title">
-                                <Link to={data.fxRates ? "/input" : "/fx" } onClick={(e) => handleSelect(data, e)}>
+                                <Link to={data.fxRates ? "/input" : "/fx"} onClick={(e) => handleSelect(data, e)}>
                                     {data.name ? data.name : '名前入力なし'}
                                 </Link>
                                 <span>
-                                    {data.modDate 
-                                        ? new Date(data.modDate).toLocaleDateString('ja-JP', { 
-                                            year: 'numeric', 
-                                            month: '2-digit' 
-                                          }) 
+                                    {data.modDate
+                                        ? new Date(data.modDate).toLocaleDateString('ja-JP', {
+                                            year: 'numeric',
+                                            month: '2-digit'
+                                        })
                                         : '--.--'
                                     }
                                 </span>
-                                
+
                                 <div className="menu-button" onClick={(e) => handleItemClick(data, e)}>
                                     <FontAwesomeIcon icon={faEllipsisVertical} />
                                 </div>

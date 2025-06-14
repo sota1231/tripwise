@@ -4,15 +4,16 @@
 }
 
 .top-header {
-  /* display: flex;
-  justify-content: space-between; */
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
   padding: 0 4px;
+  margin-bottom: 16px;
+
 }
 
 .top-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--text-color);
   padding-bottom: 8px;
@@ -21,12 +22,13 @@
 .header-buttons {
   display: flex;
   gap: 8px;
+  margin-bottom: 24px;
 }
 
 .header-button {
   padding: 8px 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   background-color: var(--primary-color);
   color: white;
@@ -36,9 +38,10 @@
 }
 .header-button.red{
   background-color: rgb(232, 16, 12);
+  font-size: 8px;
 }
 .header-button.green{
-  background-color: rgb(120, 218, 50);
+  background-color: #4CAF50;
 }
 
 .header-button:active {
