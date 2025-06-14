@@ -4,6 +4,8 @@ import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { clearLocalRecords, getAllLocalRecords } from './LocalInputData';
 import './List.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrain, faUtensils, faHotel, faPlane } from '@fortawesome/free-solid-svg-icons';
 
 const List = ({
   handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectRecord
@@ -35,14 +37,15 @@ const List = ({
     navigate('/update');
   };
 
-  // 項目名を日本語に変換
-  const getKindName = (kind) => {
-    const kinds = {
-      trafic: '交通・移動',
-      food: '食事・飲み物',
-      accommodation: '宿泊費'
+  // 項目名をアイコンに変換
+  const getKindIcon = (kind) => {
+    const icons = {
+      trafic: <FontAwesomeIcon icon={faTrain} className="kind-icon" />,
+      food: <FontAwesomeIcon icon={faUtensils} className="kind-icon" />,
+      accommodation: <FontAwesomeIcon icon={faHotel} className="kind-icon" />,
+      flight: <FontAwesomeIcon icon={faPlane} className="kind-icon" />
     };
-    return kinds[kind] || kind;
+    return icons[kind] || kind;
   };
 
   // ボタン押下でローカルからDBへ登録処理
@@ -80,7 +83,7 @@ return (
         </div>
         {inputData.map((data) => (
           <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
-            <div className="table-cell kind">{getKindName(data.kind)}</div>
+            <div className="table-cell kind">{getKindIcon(data.kind)}</div>
             <div className="table-cell name">{data.name || '名前入力なし'}</div>
             <div className="table-cell money">¥{Number(data.jpy).toLocaleString()}</div>
             <div className="table-cell memo"></div>

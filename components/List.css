@@ -85,3 +85,13 @@
   color: #8E8E93;
   font-size: 13px;
 }
+
+.kind-icon {
+  font-size: 1.2rem;
+  color: #4CAF50;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
