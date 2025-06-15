@@ -3,9 +3,31 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import './Sum.css';
+import { Pie, Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+} from 'chart.js';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+);
 
 const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
     const [inputData, setInputData] = useState([]);
+    const [activeChart, setActiveChart] = useState('pie'); // 'pie' or 'bar'
     const navigate = useNavigate();
 
     console.log('selectedProjectRecord: '+selectedProjectRecord.id)
@@ -32,6 +54,7 @@ const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
             trafic: 0,
             food: 0,
             accommodation: 0,
+            plane: 0,
             total: 0
         };
 
@@ -51,15 +74,133 @@ const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
         const kinds = {
             trafic: '交通・移動',
             food: '食事・飲み物',
-            accommodation: '宿泊費'
+            accommodation: '宿泊費',
+            plane: '飛行機'
+
         };
         return kinds[kind] || kind;
+    };
+
+    const chartData = {
+        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機'],
+        datasets: [
+            {
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane],
+                backgroundColor: [
+                    '#FF9500', // オレンジ
+                    '#34C759', // グリーン
+                    '#007AFF', // ブルー
+                    '#FF2D55'  // ピンク
+                ],
+                borderColor: [
+                    '#FF9500',
+                    '#34C759',
+                    '#007AFF',
+                    '#FF2D55'
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const barChartData = {
+        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機'],
+        datasets: [
+            {
+                label: '金額',
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane],
+                backgroundColor: [
+                    '#FF9500',
+                    '#34C759',
+                    '#007AFF',
+                    '#FF2D55'
+                ],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+        },
+    };
+
+    const barChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: '項目別支出',
+                font: {
+                    size: 14,
+                    weight: 'bold'
+                },
+                padding: {
+                    bottom: 20
+                }
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '¥' + value.toLocaleString();
+                    },
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 12
+                    }
+                }
+            }
+        }
     };
 
     return (
         <div>
             <div className="summary-section">
-                <h2 className="summary-title">集計</h2>
+                {/* <h2 className="summary-title">集計</h2> */}
+                <div className="charts-container">
+                    <div className="chart-tabs">
+                        <button 
+                            className={`chart-tab ${activeChart === 'pie' ? 'active' : ''}`}
+                            onClick={() => setActiveChart('pie')}
+                        >
+                            円グラフ
+                        </button>
+                        <button 
+                            className={`chart-tab ${activeChart === 'bar' ? 'active' : ''}`}
+                            onClick={() => setActiveChart('bar')}
+                        >
+                            棒グラフ
+                        </button>
+                    </div>
+                    <div className="chart-wrapper">
+                        {activeChart === 'pie' ? (
+                            <Pie data={chartData} options={chartOptions} />
+                        ) : (
+                            <Bar data={barChartData} options={barChartOptions} />
+                        )}
+                    </div>
+                </div>
                 <div className="summary-item">
                     <span className="summary-label">交通・移動</span>
                     <span className="summary-value">¥{summary.trafic.toLocaleString()}</span>
@@ -71,6 +212,10 @@ const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
                 <div className="summary-item">
                     <span className="summary-label">宿泊費</span>
                     <span className="summary-value">¥{summary.accommodation.toLocaleString()}</span>
+                </div>
+                <div className="summary-item">
+                    <span className="summary-label">飛行機代</span>
+                    <span className="summary-value">¥{summary.plane.toLocaleString()}</span>
                 </div>
                 <div className="summary-item total-row">
                     <span className="summary-label">合計</span>
