@@ -8,19 +8,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrain, faUtensils, faHotel, faPlane } from '@fortawesome/free-solid-svg-icons';
 
 const List = ({
-  handleLogout, user, onDeleteInputData, setSelectedInputData, selectedProjectRecord
+  onDeleteInputData, setSelectedInputData, selectedProjectRecord
 }) => {
 
   const [inputData, setInputData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) return;
     const q = query(
       collection(db, "input_data"),
-      where("userId", "==", user.uid),
       where("projectId", "==", selectedProjectRecord.id)
     );
+    // TODO:スナップショット
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const input_data = [];
       querySnapshot.forEach((doc) => {
@@ -29,7 +28,7 @@ const List = ({
       setInputData(input_data);
     });
     return () => unsubscribe();
-  }, [user, selectedProjectRecord]);
+  }, [selectedProjectRecord]);
 
 
   const handleSelect = (data) => {

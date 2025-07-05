@@ -22,8 +22,7 @@ const currencyList = [
   { code: 'THB', country: 'タイ' },
 ];
 
-const ExchangeRateToJPY = ({ selectedProjectRecord, user }) => {
-  const userId = user.uid;
+const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
   const [rates, setRates] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedCurrencies, setSelectedCurrencies] = useState([]);
@@ -33,24 +32,6 @@ const ExchangeRateToJPY = ({ selectedProjectRecord, user }) => {
   const handleBack = () => {
     navigate(-1);
   };
-
-  // プロジェクトID、userIdと一致している為替データがある場合はsumに飛ばす
-  // useEffect(() => {
-  //   if (!user) return;
-  //   const q = query(
-  //     collection(db, "select_fx"),
-  //     where("selectedProjectId", "==", selectedProjectId),
-  //     where("userId", "==", user.uid),
-  //     limit(1)
-  //   );
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     if (!querySnapshot.empty) {
-  //       navigate("/sum");
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [user, selectedProjectId]);
 
   // 為替API発火
   useEffect(() => {
@@ -92,8 +73,6 @@ const ExchangeRateToJPY = ({ selectedProjectRecord, user }) => {
     );
   };
 
-
-
   const handleSubmit = async () => {
     if (selectedCurrencies.length === 0) {
       alert("通貨を選択してください");
@@ -116,7 +95,6 @@ const ExchangeRateToJPY = ({ selectedProjectRecord, user }) => {
       alert("保存に失敗しました");
     }
   };
-
 
   return (
     <div className="exchange-rate-container">

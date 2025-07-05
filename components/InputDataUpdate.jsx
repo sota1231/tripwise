@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import './InputDataUpdate.css';
 
 
-const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, project
+const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
     // , selectFx, setSelectFx, selectFxRate, setSelectFxRate 
 }) => {
     const navigate = useNavigate();
@@ -107,24 +107,6 @@ const InputDataUpdate = ({ user, selectedInputData, selectedProjectRecord, proje
             console.error('更新失敗:', error);
         }
     };
-
-    // DBから為替情報取得
-    // useEffect(() => {
-    //     if (!user) return;
-    //     const q = query(
-    //         collection(db, "select_fx"),
-    //         where("selectedProjectId", "==", selectedProjectRecord.id),
-    //         where("userId", "==", user.uid)
-    //     );
-    //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    //         const FxData = [];
-    //         querySnapshot.forEach((doc) => {
-    //             FxData.push({ ...doc.data(), id: doc.id }); // idデータを追加
-    //         });
-    //         setListFx(FxData);
-    //     });
-    //     return () => unsubscribe();
-    // }, [user, selectedProjectRecord]);
 
     return (
         <div className="update-container">

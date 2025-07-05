@@ -59,9 +59,6 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
             <div>
                 <div className="top-header">
                     <h1 className="top-title">旅行を選択</h1>
-                    <button className="header-button red" onClick={handleLogout}>
-                        ログアウト
-                    </button>
                 </div>
                 <div className="header-buttons">
                     <button className="header-button" onClick={onAddProject}>

@@ -8,7 +8,7 @@ import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalIn
 import { addLocalProjectRecord, getAllLocaProjectlRecords, clearLocalProjectRecords } from './LocalProjectData';
 
 
-const Input = ({ user, selectedProjectRecord, formatted }) => {
+const Input = ({ selectedProjectRecord, formatted }) => {
 
     const navigate = useNavigate();
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
@@ -77,7 +77,7 @@ const Input = ({ user, selectedProjectRecord, formatted }) => {
             fx: form.fx,
             memo: form.memo,
             modDate: form.modDate,
-            userId: user.uid,
+            // userId: user.uid,
             projectId: selectedProjectRecord.id,
         };
 

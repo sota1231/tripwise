@@ -25,17 +25,15 @@ ChartJS.register(
   Title
 );
 
-const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
+const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
     const [inputData, setInputData] = useState([]);
     const [activeChart, setActiveChart] = useState('pie'); // 'pie' or 'bar'
     const navigate = useNavigate();
 
     console.log('selectedProjectRecord: '+selectedProjectRecord.id)
     useEffect(() => {
-        if (!user) return;
         const q = query(
             collection(db, "input_data"),
-            where("userId", "==", user.uid),
             where("projectId", "==", selectedProjectRecord.id)
         );
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -46,7 +44,7 @@ const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
             setInputData(input_data);
         });
         return () => unsubscribe();
-    }, [user, selectedProjectRecord]);
+    }, [selectedProjectRecord]);
 
     // 項目ごとの集計を計算
     const calculateSummary = () => {
@@ -177,7 +175,6 @@ const Sum = ({ user, onDeleteInputData, selectedProjectRecord }) => {
     return (
         <div>
             <div className="summary-section">
-                {/* <h2 className="summary-title">集計</h2> */}
                 <div className="charts-container">
                     <div className="chart-tabs">
                         <button 

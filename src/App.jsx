@@ -15,7 +15,6 @@ import InputDataUpdate from '../components/InputDataUpdate'
 import ExchangeRate from '../components/ExchangeRate'
 
 function App() {
-  const [user, setUser] = useState(null);
   const [project, setProject] = useState([]);
   const [selectedProjectRecord, setSelectedProjectRecord] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
@@ -26,24 +25,11 @@ function App() {
   const today = new Date();
   const formatted = today.toISOString().slice(0, 10); // "YYYY-MM-DD"形式
 
-  // 認証状態の監視 =================
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
-  // ログアウト機能
-  const handleLogout = () => {
-    auth.signOut();
-  };
-
   // データ操作　プロジェクト取得 ===============
   const fetchData = async () => {
     try {
       const projectQuery = query(
         collection(db, "project_data"),
-        where("userId", "==", user.uid)
       );
 
       const querySnapshot = await getDocs(projectQuery);
@@ -54,36 +40,10 @@ function App() {
       setProject(projectData);
       console.log('プロジェクトの更新完了')
 
-      // // FXデータの取得
-      // const fxQuery = query(
-      //   collection(db, "select_fx"),
-      //   where("userId", "==", user.uid),
-      // );
-      // const fxSnapshot = await getDocs(fxQuery);
-      // const fx_data = [];
-      // fxSnapshot.forEach((doc) => {
-      //   fx_data.push({ ...doc.data(), id: doc.id });
-      // });
-      // console.log('FXデータ:', fx_data)
-
     } catch (e) {
       console.error("データの取得に失敗しました", e);
     }
   }
-
-  useEffect(() => {
-    if (!user) return;
-    fetchData();
-    // 🌟onSnapshotによるリアルタイム更新
-    // const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    //   const projectData = [];
-    //   querySnapshot.forEach((doc) => {
-    //     projectData.push({ ...doc.data(), id: doc.id }); // idデータを追加
-    //   });
-    //   setProject(projectData);
-    // });
-    // return () => unsubscribe();
-  }, [user]);
 
   // データ操作　プロジェクト登録 ===============
   const onAddProject = async () => {
@@ -91,7 +51,6 @@ function App() {
       name: '名前を登録する　→',
       modDate: formatted,
       createDate: Date.now(),
-      userId: user.uid,  // ユーザーIDを追加
       id: id,
       fxRates: ''
     };
@@ -121,17 +80,12 @@ function App() {
     await deleteDoc(doc(db, "input_data", id)); // プロジェクト削除処理
   }
 
-  if (!user) {
-    return <Login />;
-  }
-
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={
             <Top
-              handleLogout={handleLogout}
               onAddProject={onAddProject}
               project={project}
               onDeleteProject={onDeleteProject}
@@ -143,12 +97,9 @@ function App() {
           } />
           <Route path="/fx" element={
             <ExchangeRate
-              handleLogout={handleLogout}
               onAddProject={onAddProject}
               onDeleteProject={onDeleteProject}
               selectedProjectRecord={selectedProjectRecord}
-              // selectedProjectId={selectedProjectId}
-              user={user}
             />
           } />
           <Route path="/input" element={
@@ -157,7 +108,6 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <Input
-                user={user}
                 selectedProjectRecord={selectedProjectRecord}
                 formatted={formatted}
               />
@@ -170,8 +120,6 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <Sum
-                handleLogout={handleLogout}
-                user={user}
                 onDeleteInputData={onDeleteInputData}
                 selectedProjectRecord={selectedProjectRecord}
               />
@@ -184,8 +132,6 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <List
-                handleLogout={handleLogout}
-                user={user}
                 selectedProjectRecord={selectedProjectRecord}
                 onDeleteInputData={onDeleteInputData}
                 selectedInputData={selectedInputData}
@@ -200,7 +146,6 @@ function App() {
                 selectedProjectName={selectedProjectName}
               />
               <InputDataUpdate
-                user={user}
                 selectedInputData={selectedInputData}
                 selectedProjectRecord={selectedProjectRecord}
               />
