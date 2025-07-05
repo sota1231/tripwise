@@ -2,7 +2,7 @@ import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { clearLocalRecords, getAllLocalRecords } from './LocalInputData';
+import { clearLocalRecords, getAllLocalRecords, getLocalRecordsCount } from './LocalInputData';
 import './List.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrain, faUtensils, faHotel, faPlane } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,7 @@ const List = ({
 }) => {
 
   const [inputData, setInputData] = useState([]);
+  const [localRecordsCount, setLocalRecordsCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +31,34 @@ const List = ({
     return () => unsubscribe();
   }, [selectedProjectRecord]);
 
+  // indexedDBの件数を取得
+  useEffect(() => {
+    const fetchLocalRecordsCount = async () => {
+      try {
+        const count = await getLocalRecordsCount();
+        setLocalRecordsCount(count);
+      } catch (error) {
+        console.error('ローカルレコード数の取得に失敗:', error);
+      }
+    };
+
+    fetchLocalRecordsCount();
+
+    // ページがフォーカスされた時にも件数を更新
+    const handleFocus = () => {
+      fetchLocalRecordsCount();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    
+    // 定期的に件数を更新（5秒ごと）
+    const interval = setInterval(fetchLocalRecordsCount, 5000);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleSelect = (data) => {
     setSelectedInputData(data);
@@ -58,6 +87,7 @@ const List = ({
       );
       await Promise.all(batch);
       await clearLocalRecords();
+      setLocalRecordsCount(0); // 件数を0にリセット
       console.log("ローカルデータをDBに登録完了");
     } catch (e) {
       console.error("ローカルデータをDBに登録完了失敗: ", e);
@@ -68,7 +98,7 @@ const List = ({
 return (
   <>
     <div className="button-container">
-      <button className="save-button" onClick={localDataToDB}>DBに保存する</button>
+      <button className="save-button" onClick={localDataToDB}>DBに保存する（{localRecordsCount}件）</button>
     </div>
     <div className="sum-container">
       <div className="sum-table">

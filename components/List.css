@@ -1,7 +1,9 @@
 .button-container {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   padding: 1rem;
+  gap: 0.5rem;
 }
 
 .save-button {
@@ -22,6 +24,12 @@
 .save-button:active {
   background-color: #3d8b40;
 } 
+
+.local-count {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
 
 .sum-container {
   padding: 16px;

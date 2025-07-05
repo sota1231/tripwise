@@ -30,3 +30,9 @@ export const clearLocalRecords = async () => {
   const db = await initDB();
   return db.clear(STORE_NAME);
 };
+
+// ローカルDB内のレコード数を取得
+export const getLocalRecordsCount = async () => {
+  const db = await initDB();
+  return db.count(STORE_NAME);
+};

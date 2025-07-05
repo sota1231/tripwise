@@ -77,7 +77,6 @@ const Input = ({ selectedProjectRecord, formatted }) => {
             fx: form.fx,
             memo: form.memo,
             modDate: form.modDate,
-            // userId: user.uid,
             projectId: selectedProjectRecord.id,
         };
 
