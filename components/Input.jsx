@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './Input.css';
 import useOnlineStatus from './useOnlineStatus';
 import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
+import { addLocalProjectRecord, getAllLocaProjectlRecords, clearLocalProjectRecords } from './LocalProjectData';
+
 
 const Input = ({ user, selectedProjectRecord, formatted }) => {
 
@@ -12,6 +14,9 @@ const Input = ({ user, selectedProjectRecord, formatted }) => {
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
     const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
     const isOnline = useOnlineStatus(); // オンライン状況
+
+    let b = getAllLocaProjectlRecords();
+    console.log('Input: '+ b)
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {
