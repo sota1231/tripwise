@@ -90,6 +90,8 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
         fxRates: selectedFxRates
       });
       alert("為替情報をプロジェクトに保存しました");
+      navigate('/input');
+
     } catch (err) {
       console.error("保存エラー:", err);
       alert("保存に失敗しました");
@@ -130,7 +132,6 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
             <button className="submit-button" onClick={
               async () => {
                 await handleSubmit();
-                navigate('/');
               }}>
               登録する
             </button>

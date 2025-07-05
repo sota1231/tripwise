@@ -13,7 +13,8 @@ const Input = ({ selectedProjectRecord, formatted }) => {
     const navigate = useNavigate();
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
     const [selectFxRate, setSelectFxRate] = useState(null); // 選択通貨のレートを保持
-    const isOnline = useOnlineStatus(); // オンライン状況
+    // const [isOnline] = useOnlineStatus(); // オンライン状況
+    const [flashMessage, setFlashMessage] = useState(''); // フラッシュメッセージ
 
     let b = getAllLocaProjectlRecords();
     console.log('Input: '+ b)
@@ -25,6 +26,16 @@ const Input = ({ selectedProjectRecord, formatted }) => {
         }
 
     }, [selectedProjectRecord, navigate])
+
+    // フラッシュメッセージを3秒後に消す
+    useEffect(() => {
+        if (flashMessage) {
+            const timer = setTimeout(() => {
+                setFlashMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [flashMessage]);
 
     // formの準備
     const [form, setForm] = useState({
@@ -97,8 +108,10 @@ const Input = ({ selectedProjectRecord, formatted }) => {
             }))
             setSelectFx('JPY')
             setSelectFxRate(null)
+            setFlashMessage('登録が完了しました');
         } catch (error) {
             console.error('登録失敗:', error);
+            setFlashMessage('登録に失敗しました');
         }
     };
 
@@ -212,6 +225,11 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                     登録
                 </button>
             </form>
+            {flashMessage && (
+                <div className={`flash-message ${flashMessage.includes('失敗') ? 'error' : ''}`}>
+                    {flashMessage}
+                </div>
+            )}
         </div>
     )
 }
