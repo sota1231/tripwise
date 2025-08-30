@@ -71,7 +71,7 @@ const List = ({
       trafic: <FontAwesomeIcon icon={faTrain} className="kind-icon" />,
       food: <FontAwesomeIcon icon={faUtensils} className="kind-icon" />,
       accommodation: <FontAwesomeIcon icon={faHotel} className="kind-icon" />,
-      flight: <FontAwesomeIcon icon={faPlane} className="kind-icon" />
+      plane: <FontAwesomeIcon icon={faPlane} className="kind-icon" />
     };
     return icons[kind] || kind;
   };
