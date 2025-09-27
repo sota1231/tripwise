@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { clearLocalRecords, getAllLocalRecords, getLocalRecordsCount } from './LocalInputData';
 import './List.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrain, faUtensils, faHotel, faPlane } from '@fortawesome/free-solid-svg-icons';
+import { faTrain, faUtensils, faHotel, faPlane, faHotTub } from '@fortawesome/free-solid-svg-icons';
 
 const List = ({
   onDeleteInputData, setSelectedInputData, selectedProjectRecord
@@ -72,7 +72,8 @@ const List = ({
       trafic: <FontAwesomeIcon icon={faTrain} className="kind-icon" />,
       food: <FontAwesomeIcon icon={faUtensils} className="kind-icon" />,
       accommodation: <FontAwesomeIcon icon={faHotel} className="kind-icon" />,
-      plane: <FontAwesomeIcon icon={faPlane} className="kind-icon" />
+      plane: <FontAwesomeIcon icon={faPlane} className="kind-icon" />,
+      entertainment: <FontAwesomeIcon icon={faHotTub} className="kind-icon" />
     };
     return icons[kind] || kind;
   };

@@ -53,6 +53,7 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
             food: 0,
             accommodation: 0,
             plane: 0,
+            entertainment: 0,
             total: 0
         };
 
@@ -73,28 +74,30 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
             trafic: '交通・移動',
             food: '食事・飲み物',
             accommodation: '宿泊費',
-            plane: '飛行機'
-
+            plane: '飛行機',
+            entertainment: '娯楽費'
         };
         return kinds[kind] || kind;
     };
 
     const chartData = {
-        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機'],
+        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機', '娯楽費'],
         datasets: [
             {
-                data: [summary.trafic, summary.food, summary.accommodation, summary.plane],
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment],
                 backgroundColor: [
                     '#FF9500', // オレンジ
                     '#34C759', // グリーン
                     '#007AFF', // ブルー
-                    '#FF2D55'  // ピンク
+                    '#FF2D55', // ピンク
+                    '#AF52DE'  // パープル
                 ],
                 borderColor: [
                     '#FF9500',
                     '#34C759',
                     '#007AFF',
-                    '#FF2D55'
+                    '#FF2D55',
+                    '#AF52DE'
                 ],
                 borderWidth: 1,
             },
@@ -102,16 +105,17 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
     };
 
     const barChartData = {
-        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機'],
+        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機', '娯楽費'],
         datasets: [
             {
                 label: '金額',
-                data: [summary.trafic, summary.food, summary.accommodation, summary.plane],
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment],
                 backgroundColor: [
                     '#FF9500',
                     '#34C759',
                     '#007AFF',
-                    '#FF2D55'
+                    '#FF2D55',
+                    '#AF52DE'
                 ],
             },
         ],
@@ -213,6 +217,10 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
                 <div className="summary-item">
                     <span className="summary-label">飛行機代</span>
                     <span className="summary-value">¥{summary.plane.toLocaleString()}</span>
+                </div>
+                <div className="summary-item">
+                    <span className="summary-label">娯楽費</span>
+                    <span className="summary-value">¥{summary.entertainment.toLocaleString()}</span>
                 </div>
                 <div className="summary-item total-row">
                     <span className="summary-label">合計</span>

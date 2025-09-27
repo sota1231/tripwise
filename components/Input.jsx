@@ -140,6 +140,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                         <option value="food">食事・飲み物</option>
                         <option value="accommodation">宿泊費</option>plane
                         <option value="plane">飛行機代</option>
+                        <option value="entertainment">娯楽費</option>
                     </select>
                 </div>
 
