@@ -5,24 +5,22 @@ import { db } from '../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import './Top.css';
-import { addLocalProjectRecord, getAllLocaProjectlRecords, clearLocalProjectRecords } from './LocalProjectData';
+import { saveSelectedProject } from './LocalStorageProject';
 
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
-    setSelectedProjectRecord, setSelectedProjectName, fetchData, formatted
+    setSelectedProjectRecord, fetchData, formatted, setChange
 }) => {
     const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
     const [newName, setNewName] = useState(''); // onChageで入力中にセットされる
 
-    clearLocalProjectRecords(); // 画面に遷移した時にプロジェクトデータ削除
-
     // プロジェクト押下で中に入る前にデータをセット
-    const handleSelect = (data) => {
-        setSelectedProjectRecord(data);
-        setSelectedProjectName(data.name);
+    const handleSelect = async(data) => {
+        // ローカルストレージに保存
+        saveSelectedProject(data, data.name);
 
-        console.log('sota'+data);
-        addLocalProjectRecord(data); // ローカルにプロジェクトを追加
+        // useEffect用　これがないとuseEffectが動かず初期値が入らずでエラー
+        setChange(data.id)
     };
 
     // 「…」を押下で発火

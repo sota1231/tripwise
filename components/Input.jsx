@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './Input.css';
 import useOnlineStatus from './useOnlineStatus';
 import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
-import { addLocalProjectRecord, getAllLocaProjectlRecords, clearLocalProjectRecords } from './LocalProjectData';
 
 
 const Input = ({ selectedProjectRecord, formatted }) => {
@@ -16,8 +15,6 @@ const Input = ({ selectedProjectRecord, formatted }) => {
     // const [isOnline] = useOnlineStatus(); // オンライン状況
     const [flashMessage, setFlashMessage] = useState(''); // フラッシュメッセージ
 
-    let b = getAllLocaProjectlRecords();
-    console.log('Input: '+ b)
 
     // プロジェクト未選択の場合TOPに遷移
     useEffect(() => {

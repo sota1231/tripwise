@@ -1,6 +1,7 @@
 import React from 'react'
 import './Footer.css';
 import { Link, useLocation } from 'react-router-dom';
+import { removeFromLocalStorage } from './LocalStorageProject';
 
 const Footer = () => {
   const location = useLocation();
@@ -11,7 +12,13 @@ const Footer = () => {
 
   return (
     <div className='footer'>
-      <Link to="/" className={isActive('/') ? 'active' : ''}>
+      <Link to="/" className={isActive('/') ? 'active' : ''}
+        onClick={()=>{
+          removeFromLocalStorage('selectedProjectId');
+          removeFromLocalStorage('selectedProjectName');
+          removeFromLocalStorage('selectedProjectRecord');
+        }}
+      >
         選択画面
       </Link>
       <Link to="/input" className={isActive('/input') ? 'active' : ''}>

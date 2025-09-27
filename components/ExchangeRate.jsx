@@ -3,7 +3,6 @@ import { addDoc, collection, doc, limit, onSnapshot, query, updateDoc, where } f
 import { db } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import './ExchangeRate.css';
-import { addLocalProjectRecord, getAllLocaProjectlRecords, clearLocalProjectRecords } from './LocalProjectData';
 
 
 const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'KRW', 'SGD', 'INR', 'MYR', 'THB'];

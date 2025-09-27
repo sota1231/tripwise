@@ -13,13 +13,23 @@ import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc,
 import Header from '../components/Header'
 import InputDataUpdate from '../components/InputDataUpdate'
 import ExchangeRate from '../components/ExchangeRate'
+import { getFromLocalStorage } from '../components/LocalStorageProject';
 
 function App() {
   const [project, setProject] = useState([]);
+  const [change, setChange] = useState(null);
   const [selectedProjectRecord, setSelectedProjectRecord] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
   const [selectedInputData, setSelectedInputData] = useState(null);
   const id = uuidv4();
+
+  // ローカルストレージからプロジェクト親のデータを取得
+  useEffect (() => {
+    const record = getFromLocalStorage('selectedProjectRecord');
+    const name = getFromLocalStorage('selectedProjectName');
+    setSelectedProjectRecord(record);
+    setSelectedProjectName(name);
+  },[change])
 
   // 今日の日付データ
   const today = new Date();
@@ -89,10 +99,9 @@ function App() {
               onAddProject={onAddProject}
               project={project}
               onDeleteProject={onDeleteProject}
-              setSelectedProjectRecord={setSelectedProjectRecord}
-              setSelectedProjectName={setSelectedProjectName}
               fetchData={fetchData}
               formatted={formatted}
+              setChange={setChange}
             />
           } />
           <Route path="/fx" element={

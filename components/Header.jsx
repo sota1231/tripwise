@@ -3,7 +3,7 @@ import './Header.css';
 
 const Header = ({ selectedProjectName }) => {
 
-  console.log('プロジェクト名：' + selectedProjectName)
+  console.log('header：' + selectedProjectName)
   
   return (
     <header className="header">
