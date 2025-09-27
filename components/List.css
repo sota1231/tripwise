@@ -103,3 +103,17 @@
   align-items: center;
   justify-content: center;
 }
+
+/* 日付ヘッダーのスタイル */
+.date-header {
+  background-color: #e6e8ea;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.date-header:first-child {
+  margin-top: 0;
+}

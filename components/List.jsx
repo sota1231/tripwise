@@ -1,4 +1,4 @@
-import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,8 @@ const List = ({
   useEffect(() => {
     const q = query(
       collection(db, "input_data"),
-      where("projectId", "==", selectedProjectRecord.id)
+      where("projectId", "==", selectedProjectRecord.id),
+      orderBy("modDate", "desc")
     );
     // TODO:スナップショット
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -76,6 +77,41 @@ const List = ({
     return icons[kind] || kind;
   };
 
+  // 日付でデータをグループ化
+  const groupDataByDate = (data) => {
+    const grouped = {};
+    data.forEach(item => {
+      const date = new Date(item.modDate?.toDate ? item.modDate.toDate() : item.modDate);
+      const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD形式
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey].push(item);
+    });
+    return grouped;
+  };
+
+  // 日付を日本語形式で表示
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (dateString === today.toISOString().split('T')[0]) {
+      return '今日';
+    } else if (dateString === yesterday.toISOString().split('T')[0]) {
+      return '昨日';
+    } else {
+      return date.toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'short'
+      });
+    }
+  };
+
   // ボタン押下でローカルからDBへ登録処理
   const localDataToDB = async () => {
     try {
@@ -107,26 +143,34 @@ return (
             <div className="table-cell kind">項目</div>
             <div className="table-cell name">品目</div>
             <div className="table-cell money">金額</div>
-            <div className="table-cell memo">　　　　　　　　　</div>
+            <div className="table-cell memo"></div>
           </div>
         </div>
-        {inputData.map((data) => (
-          <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
-            <div className="table-cell kind">{getKindIcon(data.kind)}</div>
-            <div className="table-cell name">{data.name || '名前入力なし'}</div>
-            <div className="table-cell money">¥{Number(data.jpy).toLocaleString()}</div>
-            <div className="table-cell memo"></div>
-            <button
-              className="delete-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteInputData(data.id);
-              }}
-            >
-              削除
-            </button>
-          </div>
-        ))}
+        {Object.entries(groupDataByDate(inputData))
+          .sort(([a], [b]) => b.localeCompare(a)) // 日付の降順でソート
+          .map(([dateKey, items]) => (
+            <React.Fragment key={dateKey}>
+              <div className="date-header">
+                {formatDate(dateKey)}
+              </div>
+              {items.map((data) => (
+                <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
+                  <div className="table-cell kind">{getKindIcon(data.kind)}</div>
+                  <div className="table-cell name">{data.name || '名前入力なし'}</div>
+                  <div className="table-cell money">¥{Number(data.jpy).toLocaleString()}</div>
+                  <button
+                    className="delete-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteInputData(data.id);
+                    }}
+                  >
+                    削除
+                  </button>
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
       </div>
     </div>
   </>
