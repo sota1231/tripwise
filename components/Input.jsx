@@ -44,6 +44,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
         jpy: '',
         fx: '',
         memo: '',
+        people: 1,
     });
 
     // onChangeでformの値を変更
@@ -86,6 +87,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
             memo: form.memo,
             modDate: form.modDate,
             projectId: selectedProjectRecord.id,
+            people: form.people,
         };
 
         try {
@@ -101,7 +103,8 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                 rate: '',
                 jpy: '',
                 fx: '',
-                memo: ''
+                memo: '',
+                people: 1
             }))
             setSelectFx('JPY')
             setSelectFxRate(null)
@@ -218,6 +221,27 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                         className="form-input"
                         placeholder="メモを入力"
                     />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">人数（割り勘）</label>
+                    <select
+                        name="people"
+                        onChange={handleChange}
+                        value={form.people}
+                        className="form-select"
+                    >
+                        <option value="1">1人</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
+                        <option value="5">5人</option>
+                        <option value="6">6人</option>
+                        <option value="7">7人</option>
+                        <option value="8">8人</option>
+                        <option value="9">9人</option>
+                        <option value="10">10人</option>
+                    </select>
                 </div>
 
                 <button type="submit" className="submit-button">

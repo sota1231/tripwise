@@ -21,6 +21,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
         jpy: '',
         fx: '',
         memo: '',
+        people: 1,
     });
 
 
@@ -39,6 +40,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
             jpy: selectedInputData.jpy || '',
             fx: selectedInputData.fx || '',
             memo: selectedInputData.memo || '',
+            people: selectedInputData.people || 1,
         });
     }, [selectedInputData, navigate]);
 
@@ -97,6 +99,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
             jpy: form.jpy,
             fx: form.coin !== 'JPY' ? form.fx : '',
             memo: form.memo,
+            people: form.people,
         };
 
         try {
@@ -211,6 +214,27 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         className="form-input"
                         placeholder="メモを入力"
                     />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">人数（割り勘）</label>
+                    <select
+                        name="people"
+                        onChange={handleChange}
+                        value={form.people}
+                        className="form-select"
+                    >
+                        <option value="1">1人</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
+                        <option value="5">5人</option>
+                        <option value="6">6人</option>
+                        <option value="7">7人</option>
+                        <option value="8">8人</option>
+                        <option value="9">9人</option>
+                        <option value="10">10人</option>
+                    </select>
                 </div>
 
                 <div className="button-group">

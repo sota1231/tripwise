@@ -154,22 +154,26 @@ return (
               <div className="date-header">
                 {formatDate(dateKey)}
               </div>
-              {items.map((data) => (
-                <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
-                  <div className="table-cell kind">{getKindIcon(data.kind)}</div>
-                  <div className="table-cell name">{data.name || '名前入力なし'}</div>
-                  <div className="table-cell money">¥{Number(data.jpy).toLocaleString()}</div>
-                  <button
-                    className="delete-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteInputData(data.id);
-                    }}
-                  >
-                    削除
-                  </button>
-                </div>
-              ))}
+              {items.map((data) => {
+                const people = data.people || 1;
+                const perPersonAmount = Math.round(Number(data.jpy) / people);
+                return (
+                  <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
+                    <div className="table-cell kind">{getKindIcon(data.kind)}</div>
+                    <div className="table-cell name">{data.name || '名前入力なし'}</div>
+                    <div className="table-cell money">¥{perPersonAmount.toLocaleString()}</div>
+                    <button
+                      className="delete-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteInputData(data.id);
+                      }}
+                    >
+                      削除
+                    </button>
+                  </div>
+                );
+              })}
             </React.Fragment>
           ))}
       </div>

@@ -58,7 +58,8 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
         };
 
         inputData.forEach(item => {
-            const amount = Number(item.jpy) || 0;
+            const people = item.people || 1;
+            const amount = Math.round(Number(item.jpy) / people) || 0;
             summary[item.kind] += amount;
             summary.total += amount;
         });
