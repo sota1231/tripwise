@@ -1,6 +1,8 @@
 .top-container {
   padding: 32px 16px;
   padding-bottom: calc(80px + var(--safe-area-inset-bottom));
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  min-height: 100vh;
 }
 
 .top-header {
@@ -8,57 +10,96 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 4px;
-  margin-bottom: 16px;
-
+  margin-bottom: 20px;
 }
 
 .top-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--text-color);
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--success-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   padding-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
 .header-buttons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
 .header-button {
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
   font-size: 16px;
-  font-weight: 500;
-  background-color: var(--primary-color);
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #0051D5 100%);
   color: white;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+  position: relative;
+  overflow: hidden;
 }
-.header-button.red{
-  background-color: rgb(232, 16, 12);
-  font-size: 8px;
+
+.header-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
-.header-button.green{
-  background-color: #4CAF50;
+
+.header-button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.header-button.green {
+  background: linear-gradient(135deg, var(--success-color) 0%, #2FB350 100%);
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+}
+
+.header-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
+}
+
+.header-button.green:hover {
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.35);
 }
 
 .header-button:active {
-  opacity: 0.8;
+  transform: translateY(0);
 }
 
 .project-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .project-item {
-  background-color: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.project-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
 }
 
 .title_deleteButton {
@@ -109,34 +150,72 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .popup-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    min-width: 200px;
+    gap: 12px;
+    min-width: 240px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .popup-content button {
-    padding: 8px 16px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    background-color: #f0f0f0;
-    transition: background-color 0.2s;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.popup-content button:first-child {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0051D5 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+}
+
+.popup-content button:nth-child(2) {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #E3342F 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
+}
+
+.popup-content button:last-child {
+    background-color: var(--bg-primary);
+    color: var(--text-color);
 }
 
 .popup-content button:hover {
-    background-color: #e0e0e0;
+    transform: translateY(-2px);
 }
 
 .edit-popup {
@@ -145,47 +224,70 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeIn 0.2s ease;
 }
 
 .edit-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    min-width: 300px;
+    gap: 20px;
+    min-width: 320px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
 }
 
 .edit-content input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 14px 16px;
+    border: 2px solid var(--bg-primary);
+    border-radius: 12px;
     font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.edit-content input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
 }
 
 .edit-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-end;
 }
 
 .edit-buttons button {
-    padding: 8px 16px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    background-color: #f0f0f0;
-    transition: background-color 0.2s;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.edit-buttons button:first-child {
+    background: linear-gradient(135deg, var(--success-color) 0%, #2FB350 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+}
+
+.edit-buttons button:last-child {
+    background-color: var(--bg-primary);
+    color: var(--text-color);
 }
 
 .edit-buttons button:hover {
-    background-color: #e0e0e0;
+    transform: translateY(-2px);
 }
 
 .menu-button {

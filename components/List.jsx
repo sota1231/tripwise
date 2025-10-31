@@ -170,7 +170,7 @@ const List = ({
 
 return (
   <>
-    <div className="button-container">
+    <div className="list-button-container">
       <button className="save-button" onClick={localDataToDB}>DBに保存する（{localRecordsCount}件）</button>
       <button className="save-button" onClick={syncFromFirestore}>DBから更新</button>
     </div>
