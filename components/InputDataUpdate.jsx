@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import './InputDataUpdate.css';
+import { updateDisplayRecord } from './LocalInputData';
 
 
 const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
@@ -103,7 +104,10 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
         };
 
         try {
+            // Firestoreを更新
             await updateDoc(doc(db, 'input_data', selectedInputData.id), updatedItem);
+            // IndexedDBも更新
+            await updateDisplayRecord(selectedInputData.id, updatedItem);
             console.log('更新成功:', updatedItem);
             navigate('/input');
         } catch (error) {
@@ -229,11 +233,6 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         <option value="3">3人</option>
                         <option value="4">4人</option>
                         <option value="5">5人</option>
-                        <option value="6">6人</option>
-                        <option value="7">7人</option>
-                        <option value="8">8人</option>
-                        <option value="9">9人</option>
-                        <option value="10">10人</option>
                     </select>
                 </div>
 

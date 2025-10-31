@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import './Top.css';
 import { saveSelectedProject } from './LocalStorageProject';
+import { saveProjectRecord } from './LocalInputData';
 
 const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
     setSelectedProjectRecord, fetchData, formatted, setChange
@@ -34,10 +35,16 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
         if (!newName.trim()) return; // スペースを取り除いて結果が残らなければ処理を中止
 
         try {
+            // Firestoreを更新
             const docRef = doc(db, "project_data", selectedItem.id);
             await updateDoc(docRef, {
                 name: newName
             });
+
+            // IndexedDBも更新
+            const updatedProject = { ...selectedItem, name: newName };
+            await saveProjectRecord(updatedProject);
+
             // 名前の変更処理が終わったらモーダルのための情報を全て初期化
             handleCloseMenu();
         } catch (error) {
@@ -64,7 +71,7 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
                     </button>
 
                     <button className="header-button green" onClick={fetchData}>
-                        画面更新
+                        DBから更新
                     </button>
                 </div>
             </div>

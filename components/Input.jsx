@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Input.css';
 import useOnlineStatus from './useOnlineStatus';
-import { getAllLocalRecords, clearLocalRecords, addLocalRecord } from './LocalInputData';
+import { getAllLocalRecords, clearLocalRecords, addLocalRecord, addDisplayRecord } from './LocalInputData';
 
 
 const Input = ({ selectedProjectRecord, formatted }) => {
@@ -91,8 +91,10 @@ const Input = ({ selectedProjectRecord, formatted }) => {
         };
 
         try {
-
+            // DB送信待ちストアに保存
             await addLocalRecord(newItem);
+            // 表示用ストアにも保存
+            await addDisplayRecord(newItem);
             console.log('ローカル保存完了')
             // await addDoc(collection(db, 'input_data'), newItem);
             setForm((prev) => ({
@@ -236,11 +238,6 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                         <option value="3">3人</option>
                         <option value="4">4人</option>
                         <option value="5">5人</option>
-                        <option value="6">6人</option>
-                        <option value="7">7人</option>
-                        <option value="8">8人</option>
-                        <option value="9">9人</option>
-                        <option value="10">10人</option>
                     </select>
                 </div>
 

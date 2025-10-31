@@ -3,6 +3,7 @@ import { addDoc, collection, doc, limit, onSnapshot, query, updateDoc, where } f
 import { db } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import './ExchangeRate.css';
+import { saveProjectRecord } from './LocalInputData';
 
 
 const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'KRW', 'SGD', 'INR', 'MYR', 'THB'];
@@ -84,10 +85,16 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
     }, {});
 
     try {
+      // Firestoreを更新
       const projectDocRef = doc(db, "project_data", selectedProjectRecord.id);
       await updateDoc(projectDocRef, {
         fxRates: selectedFxRates
       });
+
+      // IndexedDBも更新
+      const updatedProject = { ...selectedProjectRecord, fxRates: selectedFxRates };
+      await saveProjectRecord(updatedProject);
+
       alert("為替情報をプロジェクトに保存しました");
       navigate('/input');
 

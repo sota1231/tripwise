@@ -1,8 +1,8 @@
-import { addDoc, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { clearLocalRecords, getAllLocalRecords, getLocalRecordsCount } from './LocalInputData';
+import { clearLocalRecords, getAllLocalRecords, getLocalRecordsCount, getAllDisplayRecords, syncDisplayRecordsByProject, deleteDisplayRecord } from './LocalInputData';
 import './List.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrain, faUtensils, faHotel, faPlane, faHotTub } from '@fortawesome/free-solid-svg-icons';
@@ -15,21 +15,33 @@ const List = ({
   const [localRecordsCount, setLocalRecordsCount] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const q = query(
-      collection(db, "input_data"),
-      where("projectId", "==", selectedProjectRecord.id),
-      orderBy("modDate", "desc")
-    );
-    // TODO:スナップショット
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const input_data = [];
-      querySnapshot.forEach((doc) => {
-        input_data.push({ ...doc.data(), id: doc.id });
+  // IndexedDBから表示用データを読み込む
+  const loadDisplayData = async () => {
+    try {
+      const records = await getAllDisplayRecords();
+      // プロジェクトIDでフィルタリング
+      const filteredRecords = records.filter(
+        record => record.projectId === selectedProjectRecord.id
+      );
+      // 日付の降順でソート
+      filteredRecords.sort((a, b) => {
+        const dateA = new Date(a.modDate);
+        const dateB = new Date(b.modDate);
+        return dateB - dateA;
       });
-      setInputData(input_data);
-    });
-    return () => unsubscribe();
+      setInputData(filteredRecords);
+    } catch (error) {
+      console.error('表示データの読み込みに失敗:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadDisplayData();
+
+    // 定期的にデータを更新（5秒ごと）
+    const interval = setInterval(loadDisplayData, 5000);
+
+    return () => clearInterval(interval);
   }, [selectedProjectRecord]);
 
   // indexedDBの件数を取得
@@ -126,16 +138,41 @@ const List = ({
       await clearLocalRecords();
       setLocalRecordsCount(0); // 件数を0にリセット
       console.log("ローカルデータをDBに登録完了");
+
+      // DB送信後、Firestoreから表示用データを同期
+      await syncFromFirestore();
     } catch (e) {
       console.error("ローカルデータをDBに登録完了失敗: ", e);
     }
+  };
 
-}
+  // Firestoreから表示用ストアに同期
+  const syncFromFirestore = async () => {
+    try {
+      const q = query(
+        collection(db, "input_data"),
+        where("projectId", "==", selectedProjectRecord.id)
+      );
+      const querySnapshot = await getDocs(q);
+      const firestoreData = [];
+      querySnapshot.forEach((doc) => {
+        firestoreData.push({ ...doc.data(), id: doc.id, firestoreId: doc.id });
+      });
+
+      // プロジェクト単位で同期（他のプロジェクトのデータは保持される）
+      await syncDisplayRecordsByProject(selectedProjectRecord.id, firestoreData);
+      await loadDisplayData();
+      console.log("Firestoreから同期完了");
+    } catch (e) {
+      console.error("Firestore同期失敗: ", e);
+    }
+  };
 
 return (
   <>
     <div className="button-container">
       <button className="save-button" onClick={localDataToDB}>DBに保存する（{localRecordsCount}件）</button>
+      <button className="save-button" onClick={syncFromFirestore}>DBから更新</button>
     </div>
     <div className="sum-container">
       <div className="sum-table">

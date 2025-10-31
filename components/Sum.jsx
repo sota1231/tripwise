@@ -1,7 +1,8 @@
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
+import { getAllDisplayRecords } from './LocalInputData';
 import './Sum.css';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
@@ -31,19 +32,28 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
     const navigate = useNavigate();
 
     console.log('selectedProjectRecord: '+selectedProjectRecord.id)
+
+    // IndexedDBから表示用データを読み込む
+    const loadDisplayData = async () => {
+        try {
+            const records = await getAllDisplayRecords();
+            // プロジェクトIDでフィルタリング
+            const filteredRecords = records.filter(
+                record => record.projectId === selectedProjectRecord.id
+            );
+            setInputData(filteredRecords);
+        } catch (error) {
+            console.error('表示データの読み込みに失敗:', error);
+        }
+    };
+
     useEffect(() => {
-        const q = query(
-            collection(db, "input_data"),
-            where("projectId", "==", selectedProjectRecord.id)
-        );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const input_data = [];
-            querySnapshot.forEach((doc) => {
-                input_data.push({ ...doc.data(), id: doc.id });
-            });
-            setInputData(input_data);
-        });
-        return () => unsubscribe();
+        loadDisplayData();
+
+        // 定期的にデータを更新（5秒ごと）
+        const interval = setInterval(loadDisplayData, 5000);
+
+        return () => clearInterval(interval);
     }, [selectedProjectRecord]);
 
     // 項目ごとの集計を計算
