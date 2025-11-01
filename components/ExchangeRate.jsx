@@ -6,12 +6,13 @@ import './ExchangeRate.css';
 import { saveProjectRecord } from './LocalInputData';
 
 
-const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'KRW', 'SGD', 'INR', 'MYR', 'THB'];
+const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'INR', 'THB','CHF', 'CNY', 'KRW', 'CAD', 'SGD', 'MYR', ];
 const currencyList = [
   { code: 'USD', country: 'アメリカ' },
   { code: 'EUR', country: 'ユーロ圏' },
   { code: 'GBP', country: 'イギリス' },
   { code: 'AUD', country: 'オーストラリア' },
+  { code: 'THB', country: 'タイ' },
   { code: 'CAD', country: 'カナダ' },
   { code: 'CHF', country: 'スイス' },
   { code: 'CNY', country: '中国' },
@@ -19,7 +20,6 @@ const currencyList = [
   { code: 'SGD', country: 'シンガポール' },
   { code: 'INR', country: 'インド' },
   { code: 'MYR', country: 'マレーシア' },
-  { code: 'THB', country: 'タイ' },
 ];
 
 const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
@@ -115,7 +115,7 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
             {Object.entries(rates).map(([currency, rate]) => {
               const country = currencyList.find(c => c.code === currency)?.country || '';
               return (
-                <li key={currency} className="currency-item">
+                <li key={currency} className={`currency-item currency-${currency}`}>
                   <label className="currency-label">
                     <input
                       type='checkbox'
@@ -123,9 +123,14 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
                       checked={selectedCurrencies.includes(currency)}
                       onChange={() => handleCheckboxChange(currency)}
                     />
-                    <span className="currency-info">
-                      {country}（{currency}）: 1 {currency} = {rate} JPY
-                    </span>
+                    <div className="currency-info">
+                      <div className="currency-name">
+                        {country} <span className="currency-code">({currency})</span>
+                      </div>
+                      <div className="currency-rate">
+                        1 {currency} = ¥{rate.toFixed(2)}
+                      </div>
+                    </div>
                   </label>
                 </li>
               );
