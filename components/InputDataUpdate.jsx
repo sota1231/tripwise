@@ -119,7 +119,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
         <div className="update-container">
             <form onSubmit={onUpdateItem} className="update-form">
                 <div className="form-group">
-                    <label className="form-label">日付</label>
+                    <label className="form-label">日付：</label>
                     <input
                         type="date"
                         name="modDate"
@@ -130,7 +130,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">項目</label>
+                    <label className="form-label">項目：</label>
                     <select
                         name="kind"
                         onChange={handleChange}
@@ -146,7 +146,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">品目</label>
+                    <label className="form-label">品目：</label>
                     <input
                         type="text"
                         name="name"
@@ -158,7 +158,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">通貨を選択</label>
+                    <label className="form-label">通貨：</label>
                     <select
                         name="coin"
                         onChange={handleFXChange}
@@ -177,25 +177,24 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
 
                 </div>
 
-                <div className="form-group">
-                    {selectFx !== 'JPY' ? (
-                        <div className="form-group">
-                            <label className="form-label">海外金額({selectFx})</label>
-                            <input
-                                type="number"
-                                name="fx"
-                                value={form.fx}
-                                onChange={handleChange}
-                                className="form-input"
-                                placeholder="金額を入力"
-                            />
-                        </div>
+                {selectFx !== 'JPY' && (
+                    <div className="form-group">
+                        <label className="form-label">海外金額({selectFx})：</label>
+                        <input
+                            type="number"
+                            name="fx"
+                            value={form.fx}
+                            onChange={handleChange}
+                            className="form-input"
+                            placeholder="金額を入力"
+                        />
+                    </div>
+                )}
 
-                    ) : ('')}
+                <div className="form-group">
                     <label className="form-label">金額(日本円){selectFx !== "JPY" && (
                         <> ※自動計算されるため入力できません</>
-                    )}</label>
-
+                    )}：</label>
                     <input
                         type="number"
                         name="jpy"
@@ -209,7 +208,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">メモ</label>
+                    <label className="form-label">メモ：</label>
                     <input
                         type="text"
                         name="memo"
@@ -221,7 +220,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">人数（割り勘）</label>
+                    <label className="form-label">人数（割り勘）：</label>
                     <select
                         name="people"
                         onChange={handleChange}

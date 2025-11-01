@@ -18,11 +18,13 @@
 }
 
 .form-label {
-  display: block;
+  display: inline-block;
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 10px;
+  color: #888;
+  white-space: nowrap;
+  min-width: 120px;
+  flex-shrink: 0;
 }
 
 .form-input,
