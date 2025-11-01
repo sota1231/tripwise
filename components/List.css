@@ -82,13 +82,16 @@
   padding: 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   align-items: center;
-  transition: all 0.2s ease;
+  transition: transform 0.3s ease, background-color 0.2s ease;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
+  background: white;
+  touch-action: pan-y;
 }
 
-.table-row:hover {
+.table-row:hover:not(.swiped) {
   background-color: #f8f9fa;
-  transform: translateX(4px);
 }
 
 .table-row:last-child {
@@ -102,8 +105,9 @@
 }
 
 .table-cell.kind {
-  flex: 0.8;
+  flex: 0.3;
   color: #8E8E93;
+  padding-left: 8px;
 }
 
 .table-cell.name {
@@ -111,10 +115,17 @@
   font-weight: 500;
 }
 
+.table-cell.name.columnHeader {
+  color: #8E8E93;
+  padding-left: 12px;
+  font-weight: 600;
+}
+
 .table-cell.money {
-  flex: 0.8;
+  flex: 0.3;
   text-align: right;
   font-weight: 600;
+  padding-right: 8px;
 }
 
 .table-cell.memo {
@@ -149,32 +160,53 @@
   top: 0;
   z-index: 10;
   backdrop-filter: blur(10px);
+  text-align: center;
 }
 
 .date-header:first-child {
   margin-top: 0;
 }
 
-/* 削除ボタン */
-.delete-button {
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
+/* スワイプコンテナ */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 削除背景 */
+.delete-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100px;
   background: linear-gradient(135deg, var(--danger-color) 0%, #E3342F 100%);
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+}
+
+/* スワイプ時の削除ボタン */
+.delete-button-swipe {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  background: white;
+  color: var(--danger-color);
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
 
-.delete-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 59, 48, 0.35);
+.delete-button-swipe:active {
+  transform: scale(0.95);
 }
 
-.delete-button:active {
-  transform: translateY(0);
+/* スワイプ状態 */
+.table-row.swiped {
+  transform: translateX(-100px);
 }

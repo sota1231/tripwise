@@ -13,6 +13,9 @@ const List = ({
 
   const [inputData, setInputData] = useState([]);
   const [localRecordsCount, setLocalRecordsCount] = useState(0);
+  const [swipedItemId, setSwipedItemId] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const navigate = useNavigate();
 
   // IndexedDBから表示用データを読み込む
@@ -76,6 +79,32 @@ const List = ({
   const handleSelect = (data) => {
     setSelectedInputData(data);
     navigate('/update');
+  };
+
+  // スワイプ検知の最小距離
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = (itemId) => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setSwipedItemId(itemId);
+    } else if (isRightSwipe) {
+      setSwipedItemId(null);
+    }
   };
 
   // 項目名をアイコンに変換
@@ -179,9 +208,8 @@ return (
         <div className="table-header">
           <div className="table-row">
             <div className="table-cell kind">項目</div>
-            <div className="table-cell name">品目</div>
+            <div className="table-cell name columnHeader">品目</div>
             <div className="table-cell money">金額</div>
-            <div className="table-cell memo"></div>
           </div>
         </div>
         {Object.entries(groupDataByDate(inputData))
@@ -194,20 +222,36 @@ return (
               {items.map((data) => {
                 const people = data.people || 1;
                 const perPersonAmount = Math.round(Number(data.jpy) / people);
+                const isSwiped = swipedItemId === data.id;
                 return (
-                  <div key={data.id} className="table-row" onClick={() => handleSelect(data)}>
-                    <div className="table-cell kind">{getKindIcon(data.kind)}</div>
-                    <div className="table-cell name">{data.name || '名前入力なし'}</div>
-                    <div className="table-cell money">¥{perPersonAmount.toLocaleString()}</div>
-                    <button
-                      className="delete-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteInputData(data.id);
-                      }}
+                  <div
+                    key={data.id}
+                    className="swipe-container"
+                  >
+                    <div className="delete-background">
+                      <button
+                        className="delete-button-swipe"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          await onDeleteInputData(data.id);
+                          setSwipedItemId(null);
+                          await loadDisplayData(); // 削除後すぐに再読み込み
+                        }}
+                      >
+                        削除
+                      </button>
+                    </div>
+                    <div
+                      className={`table-row ${isSwiped ? 'swiped' : ''}`}
+                      onClick={() => !isSwiped && handleSelect(data)}
+                      onTouchStart={onTouchStart}
+                      onTouchMove={onTouchMove}
+                      onTouchEnd={() => onTouchEnd(data.id)}
                     >
-                      削除
-                    </button>
+                      <div className="table-cell kind">{getKindIcon(data.kind)}</div>
+                      <div className="table-cell name">{data.name || '名前入力なし'}</div>
+                      <div className="table-cell money">¥{perPersonAmount.toLocaleString()}</div>
+                    </div>
                   </div>
                 );
               })}
