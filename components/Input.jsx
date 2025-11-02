@@ -78,6 +78,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
         e.preventDefault(); // ←重要: フォーム送信時のリロードを防ぐ
 
         const newItem = {
+            projectId: selectedProjectRecord.id,
             kind: form.kind,
             name: form.name,
             coin: selectFx,
@@ -85,9 +86,8 @@ const Input = ({ selectedProjectRecord, formatted }) => {
             jpy: form.jpy,
             fx: form.fx,
             memo: form.memo,
-            modDate: form.modDate,
-            projectId: selectedProjectRecord.id,
             people: form.people,
+            modDate: form.modDate,
         };
 
         try {
@@ -171,44 +171,40 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                         value={selectFx}
                     >
                         <option value="JPY">JPY</option>
-
                         {selectedProjectRecord.fxRates &&
                             Object.entries(selectedProjectRecord.fxRates).map(([key, value]) => (
                                 <option key={key} value={key} data-rate={value}>
                                     {key}
                                 </option>
-                            ))}
+                            ))
+                        }
                     </select>
-
                 </div>
 
 
+                {selectFx !== 'JPY' ? (
+                    <div className="form-group">
+                        <label className="form-label">海外金額({selectFx})</label>
+                        <input
+                            type="number"
+                            name="fx"
+                            value={form.fx}
+                            onChange={handleChange}
+                            className="form-input"
+                            placeholder="金額を入力"
+                        />
+                    </div>
+
+                ) : ('')}
                 <div className="form-group">
-                    {selectFx !== 'JPY' ? (
-                        <div className="form-group">
-                            <label className="form-label">海外金額({selectFx})</label>
-                            <input
-                                type="number"
-                                name="fx"
-                                value={form.fx}
-                                onChange={handleChange}
-                                className="form-input"
-                                placeholder="金額を入力"
-                            />
-                        </div>
-
-                    ) : ('')}
-                    <label className="form-label">金額(日本円){selectFx !== "JPY" && (
-                        <> ※自動計算されるため入力できません</>
-                    )}</label>
-
+                    <label className="form-label">金額(日本円)</label>
                     <input
                         type="number"
                         name="jpy"
                         value={form.jpy}
                         onChange={handleChange}
                         className="form-input"
-                        placeholder={selectFx !== "JPY" ? '自動計算　入力不可！' : ''}
+                        placeholder={selectFx !== "JPY" ? '※自動計算されるため入力できません' : '日本円を入力'}
                         readOnly={selectFx !== "JPY"}
                     />
                 </div>

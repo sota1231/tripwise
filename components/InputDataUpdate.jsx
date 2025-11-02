@@ -92,7 +92,6 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
         }
 
         const updatedItem = {
-            modDate: form.modDate,
             kind: form.kind,
             name: form.name,
             coin: form.coin,
@@ -101,6 +100,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
             fx: form.coin !== 'JPY' ? form.fx : '',
             memo: form.memo,
             people: form.people,
+            modDate: form.modDate,
         };
 
         try {
@@ -166,15 +166,14 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         value={form.coin}
                     >
                         <option value="JPY">JPY</option>
-
                         {selectedProjectRecord.fxRates &&
                             Object.entries(selectedProjectRecord.fxRates).map(([key, value]) => (
                                 <option key={key} value={key} data-rate={value}>
                                     {key}
                                 </option>
-                            ))}
+                            ))
+                        }
                     </select>
-
                 </div>
 
                 {selectFx !== 'JPY' && (
@@ -192,9 +191,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                 )}
 
                 <div className="form-group">
-                    <label className="form-label">金額(日本円){selectFx !== "JPY" && (
-                        <> ※自動計算されるため入力できません</>
-                    )}：</label>
+                    <label className="form-label">金額(日本円)</label>
                     <input
                         type="number"
                         name="jpy"
@@ -202,7 +199,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         // value={selectFx !== 'JPY' ? form.fx * selectFxRate : form.jpy}
                         onChange={handleChange}
                         className="form-input"
-                        placeholder={selectFx !== "JPY" ? '自動計算　入力不可！' : ''}
+                        placeholder={selectFx !== "JPY" ? '※自動計算されるため入力できません' : ''}
                         readOnly={selectFx !== "JPY"}
                     />
                 </div>

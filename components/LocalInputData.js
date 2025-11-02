@@ -88,6 +88,7 @@ export const syncDisplayRecords = async (records) => {
 };
 
 // プロジェクト単位でFirestoreデータを同期（指定プロジェクトのみ削除して追加）
+// ここではローカルストレージの操作のみ
 export const syncDisplayRecordsByProject = async (projectId, records) => {
   const db = await initDB();
 
@@ -107,7 +108,7 @@ export const syncDisplayRecordsByProject = async (projectId, records) => {
 
   // 新しいデータを追加
   for (const record of records) {
-    await db.add(DISPLAY_STORE_NAME, record);
+    await db.put(DISPLAY_STORE_NAME, record);
   }
 };
 
