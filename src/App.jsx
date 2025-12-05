@@ -14,7 +14,7 @@ import Header from '../components/Header'
 import InputDataUpdate from '../components/InputDataUpdate'
 import ExchangeRate from '../components/ExchangeRate'
 import { getFromLocalStorage } from '../components/LocalStorageProject';
-import { deleteDisplayRecord, getAllProjectRecords, saveProjectRecord, deleteProjectRecord, syncProjectRecords, getAllDisplayRecords } from '../components/LocalInputData';
+import { deleteDisplayRecord, getAllProjectRecords, saveProjectRecord, deleteProjectRecord, syncProjectRecords, getAllDisplayRecords, saveAuthSession, getAuthSession, clearAuthSession } from '../components/LocalInputData';
 
 function App() {
   const [project, setProject] = useState([]);
@@ -22,7 +22,58 @@ function App() {
   const [selectedProjectRecord, setSelectedProjectRecord] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
   const [selectedInputData, setSelectedInputData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
   const id = uuidv4();
+
+  // アプリ起動時に認証状態をチェック
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const session = await getAuthSession();
+        if (session && session.userId) {
+          setIsAuthenticated(true);
+          setCurrentUser(session);
+        }
+      } catch (error) {
+        console.error('認証チェックエラー:', error);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // ログイン処理
+  const handleLogin = async (selectedUser, password) => {
+    if (password === selectedUser.password) {
+      await saveAuthSession(
+        selectedUser.id,
+        selectedUser.email,
+        selectedUser.displayName,
+        selectedUser.isVerified
+      );
+      setCurrentUser({
+        userId: selectedUser.id,
+        email: selectedUser.email,
+        displayName: selectedUser.displayName,
+        isVerified: selectedUser.isVerified
+      });
+      setIsAuthenticated(true);
+    } else {
+      alert('パスワードが正しくありません');
+    }
+  };
+
+  // ログアウト処理
+  const handleLogout = async () => {
+    if (window.confirm('ログアウトしますか？')) {
+      await clearAuthSession();
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+    }
+  };
 
   // ローカルストレージからプロジェクト親のデータを取得
   useEffect (() => {
@@ -146,6 +197,27 @@ function App() {
     }
   }
 
+  // 認証チェック中はローディング表示
+  if (isCheckingAuth) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px'
+      }}>
+        読み込み中...
+      </div>
+    );
+  }
+
+  // 未認証の場合はログイン画面を表示
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  // 認証済みの場合はアプリを表示
   return (
     <>
       <BrowserRouter>
@@ -158,6 +230,8 @@ function App() {
               fetchData={fetchData}
               formatted={formatted}
               setChange={setChange}
+              onLogout={handleLogout}
+              currentUser={currentUser}
             />
           } />
           <Route path="/fx" element={

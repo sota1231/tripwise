@@ -8,8 +8,8 @@ import './Top.css';
 import { saveSelectedProject } from './LocalStorageProject';
 import { saveProjectRecord } from './LocalInputData';
 
-const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
-    setSelectedProjectRecord, fetchData, formatted, setChange
+const Top = ({ onLogout, onAddProject, project, onDeleteProject,
+    setSelectedProjectRecord, fetchData, formatted, setChange, currentUser
 }) => {
     const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
@@ -64,6 +64,24 @@ const Top = ({ handleLogout, onAddProject, project, onDeleteProject,
             <div>
                 <div className="top-header">
                     <h1 className="top-title">旅行を選択</h1>
+                    <div className="user-section">
+                        {currentUser && (
+                            <div className="current-user-info">
+                                <div className="user-avatar-mini">
+                                    {currentUser.displayName.charAt(0)}
+                                </div>
+                                <div className="user-details">
+                                    <span className="user-name">{currentUser.displayName}</span>
+                                    <span className={`user-status ${currentUser.isVerified ? 'verified' : 'unverified'}`}>
+                                        {currentUser.isVerified ? '✓ 認証済み' : '未認証'}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        <button className="logout-button" onClick={onLogout}>
+                            ログアウト
+                        </button>
+                    </div>
                 </div>
                 <div className="header-buttons">
                     <button className="header-button" onClick={onAddProject}>

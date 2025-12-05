@@ -4,9 +4,10 @@ const DB_NAME = 'input_data';
 const STORE_NAME = 'input_data_records'; // DB送信待ちデータ
 const DISPLAY_STORE_NAME = 'display_data'; // 表示用データ
 const PROJECT_STORE_NAME = 'project_data'; // プロジェクトデータ
+const AUTH_STORE_NAME = 'auth_data'; // 認証データ
 
 export const initDB = async () => {
-  return openDB(DB_NAME, 3, { // バージョンを3に上げる
+  return openDB(DB_NAME, 4, { // バージョンを4に上げる
     upgrade(db) { // upgradeは初期化、更新するときに呼ばれる関数
       if (!db.objectStoreNames.contains(STORE_NAME)) { // STORE_NAMEがなければ作成する
         db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
@@ -16,6 +17,9 @@ export const initDB = async () => {
       }
       if (!db.objectStoreNames.contains(PROJECT_STORE_NAME)) { // プロジェクト用ストアを作成
         db.createObjectStore(PROJECT_STORE_NAME, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(AUTH_STORE_NAME)) { // 認証用ストアを作成
+        db.createObjectStore(AUTH_STORE_NAME, { keyPath: 'key' });
       }
     },
   });
@@ -140,4 +144,31 @@ export const syncProjectRecords = async (projects) => {
   for (const project of projects) {
     await db.put(PROJECT_STORE_NAME, project);
   }
+};
+
+// ==== 認証データの操作 ====
+
+// 認証情報を保存
+export const saveAuthSession = async (userId, email, displayName, isVerified) => {
+  const db = await initDB();
+  await db.put(AUTH_STORE_NAME, {
+    key: 'session',
+    userId,
+    email,
+    displayName,
+    isVerified,
+    loginTime: Date.now()
+  });
+};
+
+// 認証情報を取得
+export const getAuthSession = async () => {
+  const db = await initDB();
+  return db.get(AUTH_STORE_NAME, 'session');
+};
+
+// 認証情報を削除（ログアウト）
+export const clearAuthSession = async () => {
+  const db = await initDB();
+  await db.delete(AUTH_STORE_NAME, 'session');
 };
