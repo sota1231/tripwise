@@ -23,6 +23,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
         fx: '',
         memo: '',
         people: 1,
+        paidBy: '',
     });
 
 
@@ -42,6 +43,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
             fx: selectedInputData.fx || '',
             memo: selectedInputData.memo || '',
             people: selectedInputData.people || 1,
+            paidBy: selectedInputData.paidBy || '',
         });
     }, [selectedInputData, navigate]);
 
@@ -101,6 +103,7 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
             memo: form.memo,
             people: form.people,
             modDate: form.modDate,
+            paidBy: form.paidBy,
         };
 
         try {
@@ -229,6 +232,20 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         <option value="3">3人</option>
                         <option value="4">4人</option>
                         <option value="5">5人</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">支払者：</label>
+                    <select
+                        name="paidBy"
+                        onChange={handleChange}
+                        value={form.paidBy}
+                        className="form-select"
+                    >
+                        <option value="">選択してください</option>
+                        <option value="sota">sota</option>
+                        <option value="marina">marina</option>
                     </select>
                 </div>
 

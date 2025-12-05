@@ -7,7 +7,7 @@ import useOnlineStatus from './useOnlineStatus';
 import { getAllLocalRecords, clearLocalRecords, addLocalRecord, addDisplayRecord } from './LocalInputData';
 
 
-const Input = ({ selectedProjectRecord, formatted }) => {
+const Input = ({ selectedProjectRecord, formatted, currentUser }) => {
 
     const navigate = useNavigate();
     const [selectFx, setSelectFx] = useState('JPY'); // 選択通貨を保持 入力欄制御
@@ -45,6 +45,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
         fx: '',
         memo: '',
         people: 1,
+        paidBy: '', // 支払者
     });
 
     // onChangeでformの値を変更
@@ -88,6 +89,7 @@ const Input = ({ selectedProjectRecord, formatted }) => {
             memo: form.memo,
             people: form.people,
             modDate: form.modDate,
+            paidBy: form.paidBy, // 支払者を追加
         };
 
         try {
@@ -106,7 +108,8 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                 jpy: '',
                 fx: '',
                 memo: '',
-                people: 1
+                people: 1,
+                paidBy: ''
             }))
             setSelectFx('JPY')
             setSelectFxRate(null)
@@ -234,6 +237,20 @@ const Input = ({ selectedProjectRecord, formatted }) => {
                         <option value="3">3人</option>
                         <option value="4">4人</option>
                         <option value="5">5人</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">支払者</label>
+                    <select
+                        name="paidBy"
+                        onChange={handleChange}
+                        value={form.paidBy}
+                        className="form-select"
+                    >
+                        <option value="">選択してください</option>
+                        <option value="sota">sota</option>
+                        <option value="marina">marina</option>
                     </select>
                 </div>
 

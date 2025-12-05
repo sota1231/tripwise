@@ -30,7 +30,9 @@ const Footer = () => {
       <Link to="/sum" className={isActive('/sum') ? 'active' : ''}>
         集計
       </Link>
-      
+      <Link to="/balance" className={isActive('/balance') ? 'active' : ''}>
+        貸借
+      </Link>
     </div>
   )
 }

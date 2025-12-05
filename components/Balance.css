@@ -1,0 +1,257 @@
+.balance-container {
+    padding: 32px 16px;
+    padding-bottom: calc(80px + var(--safe-area-inset-bottom));
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+.balance-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.balance-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.balance-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.balance-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.balance-user-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.balance-amount {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.balance-amount.positive {
+    color: #34c759;
+}
+
+.balance-amount.negative {
+    color: #ff3b30;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: #999;
+    font-weight: 500;
+}
+
+.balance-message {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.balance-message.positive {
+    border: 2px solid #34c759;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.balance-message.neutral {
+    border: 2px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.balance-message p {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.balance-message strong {
+    color: #34c759;
+    font-size: 24px;
+}
+
+.payment-complete-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-align: center;
+}
+
+.payment-complete-button {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #34c759 0%, #2fb350 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+}
+
+.payment-complete-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4);
+}
+
+.payment-complete-button:active {
+    transform: translateY(0);
+}
+
+.payment-complete-info {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border: 1px solid #34c759;
+}
+
+.payment-complete-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.payment-complete-info strong {
+    color: #34c759;
+    font-weight: 700;
+}
+
+.transactions-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.transactions-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    padding: 40px 0;
+    font-size: 16px;
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.transaction-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.transaction-item:hover {
+    background: #f0f0f0;
+    border-color: #ccc;
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.payer-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.payer-badge.sota {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.payer-badge.marina {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.transaction-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.transaction-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.transaction-total {
+    font-size: 18px;
+    font-weight: 700;
+    color: #007aff;
+}
+
+.transaction-per-person {
+    font-size: 13px;
+    color: #666;
+}
+
+@media (max-width: 480px) {
+    .balance-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .balance-amount {
+        font-size: 28px;
+    }
+
+    .balance-message p {
+        font-size: 16px;
+    }
+
+    .balance-message strong {
+        font-size: 20px;
+    }
+}

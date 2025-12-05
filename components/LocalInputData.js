@@ -172,3 +172,27 @@ export const clearAuthSession = async () => {
   const db = await initDB();
   await db.delete(AUTH_STORE_NAME, 'session');
 };
+
+// 支払い完了情報を保存
+export const savePaymentComplete = async (projectId, completedBy, completedDate) => {
+  const db = await initDB();
+  await db.put(AUTH_STORE_NAME, {
+    key: `payment_${projectId}`,
+    projectId,
+    completedBy,
+    completedDate,
+    completedTime: Date.now()
+  });
+};
+
+// 支払い完了情報を取得
+export const getPaymentComplete = async (projectId) => {
+  const db = await initDB();
+  return db.get(AUTH_STORE_NAME, `payment_${projectId}`);
+};
+
+// 支払い完了情報を削除
+export const clearPaymentComplete = async (projectId) => {
+  const db = await initDB();
+  await db.delete(AUTH_STORE_NAME, `payment_${projectId}`);
+};

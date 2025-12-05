@@ -13,6 +13,7 @@ import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc,
 import Header from '../components/Header'
 import InputDataUpdate from '../components/InputDataUpdate'
 import ExchangeRate from '../components/ExchangeRate'
+import Balance from '../components/Balance'
 import { getFromLocalStorage } from '../components/LocalStorageProject';
 import { deleteDisplayRecord, getAllProjectRecords, saveProjectRecord, deleteProjectRecord, syncProjectRecords, getAllDisplayRecords, saveAuthSession, getAuthSession, clearAuthSession } from '../components/LocalInputData';
 
@@ -249,6 +250,7 @@ function App() {
               <Input
                 selectedProjectRecord={selectedProjectRecord}
                 formatted={formatted}
+                currentUser={currentUser}
               />
               <Footer />
             </>
@@ -287,6 +289,18 @@ function App() {
               <InputDataUpdate
                 selectedInputData={selectedInputData}
                 selectedProjectRecord={selectedProjectRecord}
+              />
+              <Footer />
+            </>
+          } />
+          <Route path="/balance" element={
+            <>
+              <Header
+                selectedProjectName={selectedProjectName}
+              />
+              <Balance
+                selectedProjectRecord={selectedProjectRecord}
+                currentUser={currentUser}
               />
               <Footer />
             </>
