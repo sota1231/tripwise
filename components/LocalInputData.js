@@ -176,12 +176,31 @@ export const clearAuthSession = async () => {
 // 支払い完了情報を保存
 export const savePaymentComplete = async (projectId, completedBy, completedDate) => {
   const db = await initDB();
-  await db.put(AUTH_STORE_NAME, {
-    key: `payment_${projectId}`,
-    projectId,
+  const key = `payment_${projectId}`;
+
+  // 既存の支払い完了情報を取得
+  const existing = await db.get(AUTH_STORE_NAME, key);
+  // 古い形式のデータ（payments配列がない場合）も考慮して安全に配列を取得
+  const payments = (existing && Array.isArray(existing.payments)) ? existing.payments : [];
+
+  // 同じユーザーの記録があれば更新、なければ追加
+  const existingIndex = payments.findIndex(p => p.completedBy === completedBy);
+  const newPayment = {
     completedBy,
     completedDate,
     completedTime: Date.now()
+  };
+
+  if (existingIndex >= 0) {
+    payments[existingIndex] = newPayment;
+  } else {
+    payments.push(newPayment);
+  }
+
+  await db.put(AUTH_STORE_NAME, {
+    key,
+    projectId,
+    payments
   });
 };
 
@@ -195,4 +214,34 @@ export const getPaymentComplete = async (projectId) => {
 export const clearPaymentComplete = async (projectId) => {
   const db = await initDB();
   await db.delete(AUTH_STORE_NAME, `payment_${projectId}`);
+};
+
+// プロジェクトの認証済みユーザーを追加
+export const addVerifiedUserToProject = async (projectId, userName) => {
+  const db = await initDB();
+  const key = `verified_users_${projectId}`;
+
+  // 既存のユーザーリストを取得
+  const existing = await db.get(AUTH_STORE_NAME, key);
+  const users = existing ? existing.users : [];
+
+  // 重複を避けて追加
+  if (!users.includes(userName)) {
+    users.push(userName);
+  }
+
+  await db.put(AUTH_STORE_NAME, {
+    key,
+    projectId,
+    users,
+    updatedTime: Date.now()
+  });
+};
+
+// プロジェクトの認証済みユーザーを取得
+export const getVerifiedUsersForProject = async (projectId) => {
+  const db = await initDB();
+  const key = `verified_users_${projectId}`;
+  const result = await db.get(AUTH_STORE_NAME, key);
+  return result ? result.users : [];
 };

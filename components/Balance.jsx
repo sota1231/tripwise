@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Balance.css';
-import { getAllDisplayRecords, savePaymentComplete, getPaymentComplete } from './LocalInputData';
+import { getAllDisplayRecords, savePaymentComplete, getPaymentComplete, addVerifiedUserToProject, saveProjectRecord } from './LocalInputData';
+import { doc, updateDoc, arrayUnion, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Balance = ({ selectedProjectRecord, currentUser }) => {
     const navigate = useNavigate();
@@ -116,15 +118,53 @@ const Balance = ({ selectedProjectRecord, currentUser }) => {
         });
 
         try {
+            // 支払い完了情報を保存
             await savePaymentComplete(
                 selectedProjectRecord.id,
                 currentUser.displayName,
                 today
             );
-            setPaymentComplete({
-                completedBy: currentUser.displayName,
-                completedDate: today
+
+            // IndexedDBにユーザーを追加
+            await addVerifiedUserToProject(
+                selectedProjectRecord.id,
+                currentUser.displayName
+            );
+
+            // Firebaseのプロジェクトデータにユーザーを追加
+            const projectRef = doc(db, "project_data", selectedProjectRecord.id);
+
+            // ドキュメントの存在確認
+            const docSnap = await getDoc(projectRef);
+
+            let updatedVerifiedUsers = [];
+            if (docSnap.exists()) {
+                // ドキュメントが存在する場合は更新
+                await updateDoc(projectRef, {
+                    verifiedUsers: arrayUnion(currentUser.displayName)
+                });
+                // 更新後のverifiedUsersを取得
+                const updatedDoc = await getDoc(projectRef);
+                updatedVerifiedUsers = updatedDoc.data().verifiedUsers || [];
+            } else {
+                // ドキュメントが存在しない場合は作成
+                updatedVerifiedUsers = [currentUser.displayName];
+                await setDoc(projectRef, {
+                    ...selectedProjectRecord,
+                    verifiedUsers: updatedVerifiedUsers
+                });
+            }
+
+            // IndexedDBのプロジェクトレコードも更新
+            await saveProjectRecord({
+                ...selectedProjectRecord,
+                verifiedUsers: updatedVerifiedUsers
             });
+
+            // 更新後の支払い完了情報を再読み込み
+            const updatedPayment = await getPaymentComplete(selectedProjectRecord.id);
+            setPaymentComplete(updatedPayment);
+
             alert('支払い完了を記録しました');
         } catch (error) {
             console.error('支払い完了記録エラー:', error);
@@ -191,13 +231,15 @@ const Balance = ({ selectedProjectRecord, currentUser }) => {
                     >
                         支払い完了
                     </button>
-                    {paymentComplete && (
+                    {paymentComplete && paymentComplete.payments && paymentComplete.payments.length > 0 && (
                         <div className="payment-complete-info">
-                            <p>
-                                <strong>{paymentComplete.completedBy}</strong>が
-                                <strong>{paymentComplete.completedDate}</strong>に
-                                ボタンを押下しました
-                            </p>
+                            {paymentComplete.payments.map((payment, index) => (
+                                <p key={index}>
+                                    <strong>{payment.completedBy}</strong>が
+                                    <strong>{payment.completedDate}</strong>に
+                                    ボタンを押下しました
+                                </p>
+                            ))}
                         </div>
                     )}
                 </div>

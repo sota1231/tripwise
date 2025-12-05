@@ -19,7 +19,7 @@ const Login = ({ onLogin }) => {
       name: "ユーザー2",
       displayName: "marina",
       password: "2",
-      isVerified: false
+      isVerified: true
     }
   ];
 

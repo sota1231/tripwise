@@ -100,7 +100,14 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
                         <div className="title_deleteButton">
                             <div className="wordlist-note-title">
                                 <Link to={data.fxRates ? "/input" : "/fx"} onClick={(e) => handleSelect(data, e)}>
-                                    {data.name ? data.name : '名前入力なし'}
+                                    <span className="project-name">
+                                        {data.name ? data.name : '名前入力なし'}
+                                    </span>
+                                    {data.verifiedUsers && data.verifiedUsers.length > 0 && (
+                                        <span className="verified-users">
+                                            {data.verifiedUsers.join('・')}
+                                        </span>
+                                    )}
                                 </Link>
                                 <span>
                                     {data.modDate
