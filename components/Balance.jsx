@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Balance.css';
-import { getAllDisplayRecords, savePaymentComplete, getPaymentComplete, addVerifiedUserToProject, saveProjectRecord } from './LocalInputData';
+import { getAllDisplayRecords, savePaymentComplete, getPaymentComplete, addVerifiedUserToProject, saveProjectRecord, removePaymentCompleteByUser } from './LocalInputData';
 import { doc, updateDoc, arrayUnion, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -172,6 +172,56 @@ const Balance = ({ selectedProjectRecord, currentUser }) => {
         }
     };
 
+    // 支払い完了取り消しボタンの処理
+    const handleCancelPayment = async () => {
+        if (!currentUser) {
+            alert('ログインしてください');
+            return;
+        }
+
+        if (!window.confirm('支払い完了を取り消しますか？')) {
+            return;
+        }
+
+        try {
+            // IndexedDBから該当ユーザーの支払い完了記録を削除
+            await removePaymentCompleteByUser(
+                selectedProjectRecord.id,
+                currentUser.displayName
+            );
+
+            // Firebaseからユーザーを削除
+            const projectRef = doc(db, "project_data", selectedProjectRecord.id);
+            const docSnap = await getDoc(projectRef);
+
+            if (docSnap.exists()) {
+                const currentVerifiedUsers = docSnap.data().verifiedUsers || [];
+                const updatedVerifiedUsers = currentVerifiedUsers.filter(
+                    user => user !== currentUser.displayName
+                );
+
+                await updateDoc(projectRef, {
+                    verifiedUsers: updatedVerifiedUsers
+                });
+
+                // IndexedDBのプロジェクトレコードも更新
+                await saveProjectRecord({
+                    ...selectedProjectRecord,
+                    verifiedUsers: updatedVerifiedUsers
+                });
+            }
+
+            // 更新後の支払い完了情報を再読み込み
+            const updatedPayment = await getPaymentComplete(selectedProjectRecord.id);
+            setPaymentComplete(updatedPayment);
+
+            alert('支払い完了を取り消しました');
+        } catch (error) {
+            console.error('取り消しエラー:', error);
+            alert('取り消しに失敗しました');
+        }
+    };
+
     // 誰がいくら払うべきかを表示
     const renderBalanceMessage = () => {
         if (balances.sota > 0) {
@@ -225,14 +275,23 @@ const Balance = ({ selectedProjectRecord, currentUser }) => {
 
             {currentUser && (
                 <div className="payment-complete-section">
-                    <button
-                        className="payment-complete-button"
-                        onClick={handlePaymentComplete}
-                    >
-                        支払い完了
-                    </button>
+                    <div className="payment-buttons">
+                        <button
+                            className="payment-complete-button"
+                            onClick={handlePaymentComplete}
+                        >
+                            支払い完了
+                        </button>
+                        <button
+                            className="payment-cancel-button"
+                            onClick={handleCancelPayment}
+                        >
+                            取り消し
+                        </button>
+                    </div>
                     {paymentComplete && paymentComplete.payments && paymentComplete.payments.length > 0 && (
                         <div className="payment-complete-info">
+                            <h4 className="payment-status-title">現在の状態</h4>
                             {paymentComplete.payments.map((payment, index) => (
                                 <p key={index}>
                                     <strong>{payment.completedBy}</strong>が
@@ -240,6 +299,25 @@ const Balance = ({ selectedProjectRecord, currentUser }) => {
                                     ボタンを押下しました
                                 </p>
                             ))}
+                        </div>
+                    )}
+                    {paymentComplete && paymentComplete.history && paymentComplete.history.length > 0 && (
+                        <div className="payment-history">
+                            <h4 className="payment-history-title">履歴</h4>
+                            <div className="payment-history-list">
+                                {paymentComplete.history.slice().reverse().map((record, index) => (
+                                    <div key={index} className={`history-item ${record.action}`}>
+                                        <span className="history-icon">
+                                            {record.action === 'completed' ? '✓' : '✕'}
+                                        </span>
+                                        <span className="history-text">
+                                            <strong>{record.completedBy}</strong>が
+                                            <strong>{record.completedDate}</strong>に
+                                            {record.action === 'completed' ? '支払い完了' : '取り消し'}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>

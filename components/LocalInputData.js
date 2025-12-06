@@ -182,6 +182,7 @@ export const savePaymentComplete = async (projectId, completedBy, completedDate)
   const existing = await db.get(AUTH_STORE_NAME, key);
   // 古い形式のデータ（payments配列がない場合）も考慮して安全に配列を取得
   const payments = (existing && Array.isArray(existing.payments)) ? existing.payments : [];
+  const history = (existing && Array.isArray(existing.history)) ? existing.history : [];
 
   // 同じユーザーの記録があれば更新、なければ追加
   const existingIndex = payments.findIndex(p => p.completedBy === completedBy);
@@ -197,10 +198,19 @@ export const savePaymentComplete = async (projectId, completedBy, completedDate)
     payments.push(newPayment);
   }
 
+  // 履歴に記録を追加
+  history.push({
+    action: 'completed',
+    completedBy,
+    completedDate,
+    timestamp: Date.now()
+  });
+
   await db.put(AUTH_STORE_NAME, {
     key,
     projectId,
-    payments
+    payments,
+    history
   });
 };
 
@@ -210,10 +220,58 @@ export const getPaymentComplete = async (projectId) => {
   return db.get(AUTH_STORE_NAME, `payment_${projectId}`);
 };
 
-// 支払い完了情報を削除
+// 支払い完了情報を削除（プロジェクト全体）
 export const clearPaymentComplete = async (projectId) => {
   const db = await initDB();
   await db.delete(AUTH_STORE_NAME, `payment_${projectId}`);
+};
+
+// 特定ユーザーの支払い完了記録を削除
+export const removePaymentCompleteByUser = async (projectId, userName) => {
+  const db = await initDB();
+  const key = `payment_${projectId}`;
+
+  // 既存の支払い完了情報を取得
+  const existing = await db.get(AUTH_STORE_NAME, key);
+  if (!existing || !Array.isArray(existing.payments)) {
+    return; // データがなければ何もしない
+  }
+
+  // 指定ユーザーの記録を除外
+  const payments = existing.payments.filter(p => p.completedBy !== userName);
+  const history = (existing && Array.isArray(existing.history)) ? existing.history : [];
+
+  // 取り消し履歴を追加
+  const today = new Date().toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+
+  history.push({
+    action: 'cancelled',
+    completedBy: userName,
+    completedDate: today,
+    timestamp: Date.now()
+  });
+
+  if (payments.length === 0) {
+    // 誰も残っていない場合でも履歴は保持
+    await db.put(AUTH_STORE_NAME, {
+      key,
+      projectId,
+      payments: [],
+      history
+    });
+  } else {
+    // 更新して保存
+    await db.put(AUTH_STORE_NAME, {
+      key,
+      projectId,
+      payments,
+      history
+    });
+  }
 };
 
 // プロジェクトの認証済みユーザーを追加

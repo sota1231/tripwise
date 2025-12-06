@@ -101,6 +101,13 @@
     text-align: center;
 }
 
+.payment-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
 .payment-complete-button {
     padding: 14px 32px;
     background: linear-gradient(135deg, #34c759 0%, #2fb350 100%);
@@ -123,6 +130,28 @@
     transform: translateY(0);
 }
 
+.payment-cancel-button {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #ff3b30 0%, #e02020 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+.payment-cancel-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+}
+
+.payment-cancel-button:active {
+    transform: translateY(0);
+}
+
 .payment-complete-info {
     margin-top: 16px;
     padding: 12px;
@@ -131,14 +160,82 @@
     border: 1px solid #34c759;
 }
 
+.payment-status-title {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+    font-weight: 600;
+}
+
 .payment-complete-info p {
-    margin: 0;
+    margin: 4px 0;
     font-size: 14px;
     color: #333;
 }
 
 .payment-complete-info strong {
     color: #34c759;
+    font-weight: 700;
+}
+
+.payment-history {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.payment-history-title {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+    font-weight: 600;
+}
+
+.payment-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: white;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.history-icon {
+    font-size: 16px;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.history-item.completed .history-icon {
+    background: #34c759;
+    color: white;
+}
+
+.history-item.cancelled .history-icon {
+    background: #ff3b30;
+    color: white;
+}
+
+.history-text {
+    color: #333;
+}
+
+.history-text strong {
     font-weight: 700;
 }
 
