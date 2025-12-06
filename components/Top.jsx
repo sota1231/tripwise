@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import './Top.css';
 import { saveSelectedProject } from './LocalStorageProject';
-import { saveProjectRecord } from './LocalInputData';
+import { saveProjectRecord, getPaymentComplete } from './LocalInputData';
 
 const Top = ({ onLogout, onAddProject, project, onDeleteProject,
     setSelectedProjectRecord, fetchData, formatted, setChange, currentUser
@@ -14,6 +14,23 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
     const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
     const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
     const [newName, setNewName] = useState(''); // onChageで入力中にセットされる
+    const [projectPayments, setProjectPayments] = useState({}); // プロジェクトごとの支払い完了情報
+
+    // 全プロジェクトの支払い完了情報を読み込む
+    useEffect(() => {
+        const loadAllPayments = async () => {
+            const payments = {};
+            for (const proj of project) {
+                const payment = await getPaymentComplete(proj.id);
+                if (payment && payment.payments && payment.payments.length > 0) {
+                    // 支払い完了したユーザー名の配列を作成
+                    payments[proj.id] = payment.payments.map(p => p.completedBy);
+                }
+            }
+            setProjectPayments(payments);
+        };
+        loadAllPayments();
+    }, [project]);
 
     // プロジェクト押下で中に入る前にデータをセット
     const handleSelect = async(data) => {
@@ -103,9 +120,9 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
                                     <span className="project-name">
                                         {data.name ? data.name : '名前入力なし'}
                                     </span>
-                                    {data.verifiedUsers && data.verifiedUsers.length > 0 && (
+                                    {projectPayments[data.id] && projectPayments[data.id].length > 0 && (
                                         <span className="verified-users">
-                                            {data.verifiedUsers.join('・')}
+                                            {projectPayments[data.id].join('・')}
                                         </span>
                                     )}
                                 </Link>
