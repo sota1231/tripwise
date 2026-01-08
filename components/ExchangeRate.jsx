@@ -6,7 +6,7 @@ import './ExchangeRate.css';
 import { saveProjectRecord } from './LocalInputData';
 
 
-const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'INR', 'THB','CHF', 'CNY', 'KRW', 'CAD', 'SGD', 'MYR', ];
+const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'INR', 'THB','CHF', 'CNY', 'KRW', 'CAD', 'SGD', 'MYR', 'IDR', ];
 const currencyList = [
   { code: 'USD', country: 'アメリカ' },
   { code: 'EUR', country: 'ユーロ圏' },
@@ -20,6 +20,7 @@ const currencyList = [
   { code: 'SGD', country: 'シンガポール' },
   { code: 'INR', country: 'インド' },
   { code: 'MYR', country: 'マレーシア' },
+  { code: 'IDR', country: 'インドネシア' },
 ];
 
 const ExchangeRateToJPY = ({ selectedProjectRecord}) => {

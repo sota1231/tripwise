@@ -263,6 +263,18 @@
   box-shadow: 0 4px 16px rgba(165, 25, 49, 0.4);
 }
 
+/* インドネシア - 赤白 */
+.currency-IDR {
+  background:
+    linear-gradient(180deg, #FF0000 0%, #FF0000 50%, #FFFFFF 50%, #FFFFFF 100%);
+  border-color: #FF0000;
+}
+
+.currency-IDR:has(input:checked) {
+  border-color: #CC0000;
+  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.4);
+}
+
 .button-container {
   display: flex;
   gap: 16px;
