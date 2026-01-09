@@ -23,7 +23,7 @@ const currencyList = [
   { code: 'IDR', country: 'インドネシア' },
 ];
 
-const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
+const ExchangeRateToJPY = ({ selectedProjectRecord, updateSelectedProjectRecord}) => {
   const [rates, setRates] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedCurrencies, setSelectedCurrencies] = useState([]);
@@ -95,6 +95,9 @@ const ExchangeRateToJPY = ({ selectedProjectRecord}) => {
       // IndexedDBも更新
       const updatedProject = { ...selectedProjectRecord, fxRates: selectedFxRates };
       await saveProjectRecord(updatedProject);
+
+      // Reactの状態とローカルストレージも更新
+      updateSelectedProjectRecord(updatedProject);
 
       alert("為替情報をプロジェクトに保存しました");
       navigate('/input');

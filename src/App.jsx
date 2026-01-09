@@ -14,7 +14,7 @@ import Header from '../components/Header'
 import InputDataUpdate from '../components/InputDataUpdate'
 import ExchangeRate from '../components/ExchangeRate'
 import Balance from '../components/Balance'
-import { getFromLocalStorage } from '../components/LocalStorageProject';
+import { getFromLocalStorage, saveToLocalStorage } from '../components/LocalStorageProject';
 import { deleteDisplayRecord, getAllProjectRecords, saveProjectRecord, deleteProjectRecord, syncProjectRecords, getAllDisplayRecords, saveAuthSession, getAuthSession, clearAuthSession } from '../components/LocalInputData';
 
 function App() {
@@ -83,6 +83,12 @@ function App() {
     setSelectedProjectRecord(record);
     setSelectedProjectName(name);
   },[change])
+
+  // selectedProjectRecordを更新する関数
+  const updateSelectedProjectRecord = (updatedProject) => {
+    setSelectedProjectRecord(updatedProject);
+    saveToLocalStorage('selectedProjectRecord', updatedProject);
+  };
 
   // IndexedDBからプロジェクト一覧を読み込む
   const loadProjects = async () => {
@@ -240,6 +246,7 @@ function App() {
               onAddProject={onAddProject}
               onDeleteProject={onDeleteProject}
               selectedProjectRecord={selectedProjectRecord}
+              updateSelectedProjectRecord={updateSelectedProjectRecord}
             />
           } />
           <Route path="/input" element={
