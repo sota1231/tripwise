@@ -14,32 +14,37 @@
   flex: 0 0 auto;
   min-width: 140px;
   padding: 12px 16px;
-  border: none;
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
   text-align: center;
 }
 
 .save-button:first-child {
-  background: linear-gradient(135deg, var(--success-color) 0%, #2FB350 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+  background-color: rgba(52, 199, 89, 0.08);
+  color: var(--success-color);
+  border: 1.5px solid rgba(52, 199, 89, 0.3);
 }
 
 .save-button:last-child {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #0051D5 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+  background-color: rgba(0, 122, 255, 0.08);
+  color: var(--primary-color);
+  border: 1.5px solid rgba(0, 122, 255, 0.3);
 }
 
-.save-button:hover {
+.save-button:first-child:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  background-color: rgba(52, 199, 89, 0.15);
+  border-color: rgba(52, 199, 89, 0.5);
+}
+
+.save-button:last-child:hover {
+  transform: translateY(-2px);
+  background-color: rgba(0, 122, 255, 0.15);
+  border-color: rgba(0, 122, 255, 0.5);
 }
 
 .save-button:active {
@@ -180,7 +185,7 @@
   right: 0;
   bottom: 0;
   width: 100px;
-  background: linear-gradient(135deg, var(--danger-color) 0%, #E3342F 100%);
+  background: rgba(255, 59, 48, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,21 +194,31 @@
 
 /* スワイプ時の削除ボタン */
 .delete-button-swipe {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: transparent;
   color: var(--danger-color);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
 
+.delete-button-swipe svg {
+  opacity: 0.9;
+}
+
+.delete-button-swipe span {
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .delete-button-swipe:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
+  opacity: 0.7;
 }
 
 /* スワイプ状態 */

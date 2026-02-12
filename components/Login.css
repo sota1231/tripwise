@@ -160,16 +160,17 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.3);
 }
 
 .login-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .login-button:active {
@@ -178,17 +179,18 @@
 
 .back-button {
   padding: 12px;
-  background-color: #f0f0f0;
-  color: #666;
-  border: none;
-  border-radius: 8px;
+  background-color: transparent;
+  color: #8E8E93;
+  border: 1.5px solid #E5E5EA;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: rgba(142, 142, 147, 0.1);
+  border-color: #8E8E93;
+  color: #636366;
 }

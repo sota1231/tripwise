@@ -85,20 +85,21 @@
 
 .logout-button {
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
-  background-color: #f0f0f0;
-  color: #666;
-  border: 1px solid #ddd;
+  background-color: transparent;
+  color: #8E8E93;
+  border: 1.5px solid #E5E5EA;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .logout-button:hover {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: rgba(142, 142, 147, 0.1);
+  border-color: #8E8E93;
+  color: #636366;
 }
 
 .logout-button:active {
@@ -116,46 +117,28 @@
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #0051D5 100%);
-  color: white;
-  border: none;
+  background-color: rgba(0, 122, 255, 0.08);
+  color: var(--primary-color);
+  border: 1.5px solid rgba(0, 122, 255, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
-  position: relative;
-  overflow: hidden;
-}
-
-.header-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.header-button:active::before {
-  width: 300px;
-  height: 300px;
 }
 
 .header-button.green {
-  background: linear-gradient(135deg, var(--success-color) 0%, #2FB350 100%);
-  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+  background-color: rgba(52, 199, 89, 0.08);
+  color: var(--success-color);
+  border-color: rgba(52, 199, 89, 0.3);
 }
 
 .header-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
+  background-color: rgba(0, 122, 255, 0.15);
+  border-color: rgba(0, 122, 255, 0.5);
 }
 
 .header-button.green:hover {
-  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.35);
+  background-color: rgba(52, 199, 89, 0.15);
+  border-color: rgba(52, 199, 89, 0.5);
 }
 
 .header-button:active {
@@ -224,18 +207,24 @@
 }
 
 .delete-button {
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
   font-size: 13px;
-  background-color: #FF3B30;
-  color: white;
-  border: none;
+  font-weight: 600;
+  background-color: rgba(255, 59, 48, 0.1);
+  color: var(--danger-color);
+  border: 1.5px solid rgba(255, 59, 48, 0.3);
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: rgba(255, 59, 48, 0.18);
+  border-color: rgba(255, 59, 48, 0.5);
 }
 
 .delete-button:active {
-  opacity: 0.8;
+  transform: scale(0.95);
 }
 
 .popup-menu {
@@ -292,20 +281,21 @@
 }
 
 .popup-content button:first-child {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0051D5 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+    background-color: rgba(0, 122, 255, 0.08);
+    color: var(--primary-color);
+    border: 1.5px solid rgba(0, 122, 255, 0.3);
 }
 
 .popup-content button:nth-child(2) {
-    background: linear-gradient(135deg, var(--danger-color) 0%, #E3342F 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
+    background-color: rgba(255, 59, 48, 0.08);
+    color: var(--danger-color);
+    border: 1.5px solid rgba(255, 59, 48, 0.3);
 }
 
 .popup-content button:last-child {
-    background-color: var(--bg-primary);
-    color: var(--text-color);
+    background-color: transparent;
+    color: #8E8E93;
+    border: 1.5px solid #E5E5EA;
 }
 
 .popup-content button:hover {
@@ -370,14 +360,15 @@
 }
 
 .edit-buttons button:first-child {
-    background: linear-gradient(135deg, var(--success-color) 0%, #2FB350 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+    background-color: rgba(52, 199, 89, 0.08);
+    color: var(--success-color);
+    border: 1.5px solid rgba(52, 199, 89, 0.3);
 }
 
 .edit-buttons button:last-child {
-    background-color: var(--bg-primary);
-    color: var(--text-color);
+    background-color: transparent;
+    color: #8E8E93;
+    border: 1.5px solid #E5E5EA;
 }
 
 .edit-buttons button:hover {
