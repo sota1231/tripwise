@@ -11,24 +11,26 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['tripwise.jpg'],
       manifest: {
-        name: 'My PWA App',
-        short_name: 'PWA App',
+        name: 'TripWise',
+        short_name: 'TripWise',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#317EFB',
         icons: [
           {
-            src: 'pwa-icon-192.png',
+            src: 'tripwise.jpg',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/jpeg',
+            purpose: 'any'
           },
           {
-            src: 'pwa-icon-512.png',
+            src: 'tripwise.jpg',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/jpeg',
+            purpose: 'any'
           }
         ]
       }
