@@ -82,51 +82,55 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
     // 項目名を日本語に変換
     const getKindName = (kind) => {
         const kinds = {
-            trafic: '交通・移動',
-            food: '食事・飲み物',
+            trafic: '交通費',
+            food: '食費',
             accommodation: '宿泊費',
             plane: '飛行機',
-            entertainment: '娯楽費'
+            entertainment: '娯楽費',
+            other: 'その他'
         };
         return kinds[kind] || kind;
     };
 
     const chartData = {
-        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機', '娯楽費'],
+        labels: ['交通費', '食費', '宿泊費', '飛行機', '娯楽費', 'その他'],
         datasets: [
             {
-                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment],
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment, summary.other || 0],
                 backgroundColor: [
                     '#FF9500', // オレンジ
                     '#34C759', // グリーン
                     '#007AFF', // ブルー
                     '#FF2D55', // ピンク
-                    '#AF52DE'  // パープル
+                    '#AF52DE', // パープル
+                    '#FFCC00'  // その他
                 ],
                 borderColor: [
                     '#FF9500',
                     '#34C759',
                     '#007AFF',
                     '#FF2D55',
-                    '#AF52DE'
+                    '#AF52DE',
+                    '#FFCC00'
                 ],
-                borderWidth: 1,
+                borderWidth: 0,
             },
         ],
     };
 
     const barChartData = {
-        labels: ['交通・移動', '食事・飲み物', '宿泊費', '飛行機', '娯楽費'],
+        labels: ['交通費', '食費', '宿泊費', '飛行機', '娯楽費', 'その他'],
         datasets: [
             {
                 label: '金額',
-                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment],
+                data: [summary.trafic, summary.food, summary.accommodation, summary.plane, summary.entertainment, summary.other || 0],
                 backgroundColor: [
                     '#FF9500',
                     '#34C759',
                     '#007AFF',
                     '#FF2D55',
-                    '#AF52DE'
+                    '#AF52DE',
+                    '#FFCC00'
                 ],
             },
         ],
@@ -137,10 +141,15 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
         plugins: {
             legend: {
                 position: 'bottom',
+                padding: {
+                    top: 20
+                },
                 labels: {
-                    padding: 20,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 15,
                     font: {
-                        size: 12
+                        size: 10
                     }
                 }
             },
@@ -214,11 +223,11 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
                     </div>
                 </div>
                 <div className="summary-item">
-                    <span className="summary-label">交通・移動</span>
+                    <span className="summary-label">交通費</span>
                     <span className="summary-value">¥{summary.trafic.toLocaleString()}</span>
                 </div>
                 <div className="summary-item">
-                    <span className="summary-label">食事・飲み物</span>
+                    <span className="summary-label">食費</span>
                     <span className="summary-value">¥{summary.food.toLocaleString()}</span>
                 </div>
                 <div className="summary-item">
@@ -232,6 +241,10 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
                 <div className="summary-item">
                     <span className="summary-label">娯楽費</span>
                     <span className="summary-value">¥{summary.entertainment.toLocaleString()}</span>
+                </div>
+                <div className="summary-item">
+                    <span className="summary-label">その他</span>
+                    <span className="summary-value">¥{summary.other ? summary.other.toLocaleString() : '0'}</span>
                 </div>
                 <div className="summary-item total-row">
                     <span className="summary-label">合計</span>

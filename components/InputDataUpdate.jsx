@@ -141,10 +141,12 @@ const InputDataUpdate = ({ selectedInputData, selectedProjectRecord
                         className="form-select"
                     >
                         <option value="">選択してください</option>
-                        <option value="trafic">交通・移動</option>
-                        <option value="food">食事・飲み物</option>
+                        <option value="trafic">交通費</option>
+                        <option value="food">食費</option>
                         <option value="accommodation">宿泊費</option>
                         <option value="plane">飛行機代</option>
+                        <option value="entertainment">娯楽費</option>
+                        <option value="other">その他</option>
                     </select>
                 </div>
 
