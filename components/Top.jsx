@@ -11,19 +11,17 @@ import { saveProjectRecord, getPaymentComplete } from './LocalInputData';
 const Top = ({ onLogout, onAddProject, project, onDeleteProject,
     setSelectedProjectRecord, fetchData, formatted, setChange, currentUser
 }) => {
-    const [selectedItem, setSelectedItem] = useState(null); // 「…」を押下した時にセット
-    const [isEditing, setIsEditing] = useState(false); // 「名前を変更する」を押下した時にセット
-    const [newName, setNewName] = useState(''); // onChageで入力中にセットされる
-    const [projectPayments, setProjectPayments] = useState({}); // プロジェクトごとの支払い完了情報
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [newName, setNewName] = useState('');
+    const [projectPayments, setProjectPayments] = useState({});
 
-    // 全プロジェクトの支払い完了情報を読み込む
     useEffect(() => {
         const loadAllPayments = async () => {
             const payments = {};
             for (const proj of project) {
                 const payment = await getPaymentComplete(proj.id);
                 if (payment && payment.payments && payment.payments.length > 0) {
-                    // 支払い完了したユーザー名の配列を作成
                     payments[proj.id] = payment.payments.map(p => p.completedBy);
                 }
             }
@@ -32,44 +30,29 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
         loadAllPayments();
     }, [project]);
 
-    // プロジェクト押下で中に入る前にデータをセット
-    const handleSelect = async(data) => {
-        // ローカルストレージに保存
+    const handleSelect = async (data) => {
         saveSelectedProject(data, data.name);
-
-        // useEffect用　これがないとuseEffectが動かず初期値が入らずでエラー
-        setChange(data.id)
+        setChange(data.id);
     };
 
-    // 「…」を押下で発火
     const handleItemClick = (data, e) => {
         e.preventDefault();
-        setSelectedItem(data); // selectedItemに選択したデータが格納
+        setSelectedItem(data);
     };
 
-    // 名前を変更して保存ボタン押下で発火
     const handleNameChange = async () => {
-        if (!newName.trim()) return; // スペースを取り除いて結果が残らなければ処理を中止
-
+        if (!newName.trim()) return;
         try {
-            // Firestoreを更新
             const docRef = doc(db, "project_data", selectedItem.id);
-            await updateDoc(docRef, {
-                name: newName
-            });
-
-            // IndexedDBも更新
+            await updateDoc(docRef, { name: newName });
             const updatedProject = { ...selectedItem, name: newName };
             await saveProjectRecord(updatedProject);
-
-            // 名前の変更処理が終わったらモーダルのための情報を全て初期化
             handleCloseMenu();
         } catch (error) {
             console.error("Error updating document: ", error);
         }
     };
 
-    // モーダルを閉じる
     const handleCloseMenu = () => {
         setSelectedItem(null);
         setIsEditing(false);
@@ -101,51 +84,62 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
                     </div>
                 </div>
                 <div className="header-buttons">
-                    <button className="header-button" onClick={onAddProject}>
-                        新規追加
-                    </button>
-
-                    <button className="header-button green" onClick={fetchData}>
-                        DBから更新
-                    </button>
+                    <button className="header-button" onClick={onAddProject}>新規追加</button>
+                    <button className="header-button green" onClick={fetchData}>DBから更新</button>
                 </div>
             </div>
 
             <div className="project-list">
-                {project.map((data) => (
-                    <div key={data.id} className="project-item">
-                        <div className="title_deleteButton">
-                            <div className="wordlist-note-title">
-                                <Link to={data.fxRates ? "/input" : "/fx"} onClick={(e) => handleSelect(data, e)}>
-                                    <span className="project-name">
-                                        {data.name ? data.name : '名前入力なし'}
-                                    </span>
-                                    {projectPayments[data.id] && projectPayments[data.id].length > 0 && (
-                                        <span className="verified-users">
-                                            {projectPayments[data.id].join('・')}
-                                        </span>
+                {project.map((data) => {
+                    const fxKeys = data.fxRates && typeof data.fxRates === 'object'
+                        ? Object.keys(data.fxRates)
+                        : [];
+                    const year = data.modDate ? data.modDate.slice(0, 4) : '--';
+                    const month = data.modDate ? data.modDate.slice(5, 7) : '--';
+
+                    return (
+                        <div key={data.id} className="ticket-card">
+                            <div className="ticket-top-bar" />
+                            <div className="ticket-body">
+                                <Link
+                                    to={data.fxRates ? "/input" : "/fx"}
+                                    onClick={() => handleSelect(data)}
+                                    className="ticket-left"
+                                >
+                                    <div className="ticket-label">TRIP</div>
+                                    <div className="ticket-name">
+                                        {data.name || '名前入力なし'}
+                                    </div>
+                                    <div className="ticket-currencies">
+                                        {fxKeys.length > 0
+                                            ? fxKeys.map(code => (
+                                                <span key={code} className="currency-stamp">{code}</span>
+                                            ))
+                                            : <span className="ticket-no-fx">通貨を設定 →</span>
+                                        }
+                                    </div>
+                                    {projectPayments[data.id]?.length > 0 && (
+                                        <div className="ticket-paid-badge">
+                                            ✓ {projectPayments[data.id].join('・')} 精算済
+                                        </div>
                                     )}
                                 </Link>
-                                <span>
-                                    {data.modDate
-                                        ? new Date(data.modDate).toLocaleDateString('ja-JP', {
-                                            year: 'numeric',
-                                            month: '2-digit'
-                                        })
-                                        : '--.--'
-                                    }
-                                </span>
-
-                                <div className="menu-button" onClick={(e) => handleItemClick(data, e)}>
-                                    <FontAwesomeIcon icon={faEllipsisVertical} />
+                                <div className="ticket-right">
+                                    <div className="ticket-date-label">DATE</div>
+                                    <div className="ticket-date">
+                                        <div>{year}</div>
+                                        <div>{month}月</div>
+                                    </div>
+                                    <div className="menu-button" onClick={(e) => handleItemClick(data, e)}>
+                                        <FontAwesomeIcon icon={faEllipsisVertical} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
-            {/* 「…」を押下でselectedItemがセットされることで表示される */}
             {selectedItem && !isEditing && (
                 <div className="popup-menu">
                     <div className="popup-content">
@@ -159,7 +153,6 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
                 </div>
             )}
 
-            {/* 「名前を変更する」押下でisEdingにセットされることで表示される */}
             {isEditing && (
                 <div className="edit-popup">
                     <div className="edit-content">
@@ -177,7 +170,7 @@ const Top = ({ onLogout, onAddProject, project, onDeleteProject,
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default Top
+export default Top;
