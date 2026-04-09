@@ -197,7 +197,7 @@ const Sum = ({ onDeleteInputData, selectedProjectRecord }) => {
     };
 
     return (
-        <div>
+        <div className="sum-container">
             <div className="summary-section">
                 <div className="charts-container">
                     <div className="chart-tabs">

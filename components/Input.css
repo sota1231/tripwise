@@ -1,7 +1,10 @@
 .input-container {
   padding: 20px 16px;
-  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  background-color: var(--background-color);
   min-height: 100vh;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .input-form {

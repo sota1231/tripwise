@@ -3,6 +3,9 @@
   padding-bottom: calc(80px + var(--safe-area-inset-bottom));
   background-color: #F2F2F7;
   min-height: 100vh;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .top-header {
@@ -144,9 +147,15 @@
 /* ===== チケットカード ===== */
 
 .project-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 20px;
+}
+
+@media (min-width: 560px) {
+  .project-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .ticket-card {

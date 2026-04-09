@@ -1,3 +1,12 @@
+.sum-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: calc(80px + var(--safe-area-inset-bottom));
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
 .delete-button {
   padding: 6px 14px;
   border-radius: 8px;
