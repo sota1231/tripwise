@@ -39,7 +39,7 @@ const ExchangeRateToJPY = ({ selectedProjectRecord, updateSelectedProjectRecord}
     const fetchRates = async () => {
       try {
         const promises = currencies.map(currency =>
-          fetch(`https://api.frankfurter.app/latest?from=${currency}&to=JPY`)
+          fetch(`https://api.frankfurter.dev/v1/latest?from=${currency}&to=JPY`)
             .then(res => res.json())
             .then(data => ({
               currency,
